@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hello">Hello World, Mosembro</string>
+    <string name="app_name">Mosembro</string>
+<string name="app_name_long">Mobile semantic browser</string>
+</resources>
