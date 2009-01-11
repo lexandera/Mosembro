@@ -55,8 +55,7 @@ public class Mosembro extends Activity {
     private ArrayList<SmartAction> smartActions = new ArrayList<SmartAction>(10);
     private MenuItem searchMenuItem;
     private MenuItem microformatsMenuItem;
-    private boolean enableLocationSmartLinks;
-    private boolean enableEventSmartLinks;
+    private boolean enableContentRewriting;
     private String lastTargetURL = "";
     
     static final int MENU_GO_TO = 1;
@@ -78,8 +77,7 @@ public class Mosembro extends Activity {
         updateTitleIcons();
         
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        enableEventSmartLinks = settings.getBoolean("enableEventSmartLinks", true);
-        enableLocationSmartLinks = settings.getBoolean("enableLocationSmartLinks", true);
+        enableContentRewriting = settings.getBoolean("enableContentRewriting", true);
         
         wv = (WebView)findViewById(R.id.browser);
         
@@ -200,29 +198,19 @@ public class Mosembro extends Activity {
         }
     }
     
-    public boolean getEnableEventSmartLinks()
+    public boolean getEnableContentRewriting()
     {
-        return enableEventSmartLinks;
+        return enableContentRewriting;
     }
     
-    public void setEnableEventSmartLinks(boolean enable)
+    public void setEnableContentRewriting(boolean enable)
     {
-        enableEventSmartLinks = enable;
+        enableContentRewriting = enable;
     }
     
     public String getLastUrl()
     {
         return lastTargetURL;
-    }
-    
-    public boolean getEnableLocationSmartLinks()
-    {
-        return enableLocationSmartLinks;
-    }
-    
-    public void setEnableLocationSmartLinks(boolean enable)
-    {
-        enableLocationSmartLinks = enable;
     }
     
     public void updateProgress(int progress)
@@ -242,8 +230,7 @@ public class Mosembro extends Activity {
     {
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean("enableEventSmartLinks", enableEventSmartLinks);
-        editor.putBoolean("enableLocationSmartLinks", enableLocationSmartLinks);
+        editor.putBoolean("enableContentRewriting", enableContentRewriting);
         editor.commit();
     }
     

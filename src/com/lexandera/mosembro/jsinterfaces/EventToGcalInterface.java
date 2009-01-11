@@ -63,7 +63,7 @@ public class EventToGcalInterface extends AbstractJSInterface
             
             int actionId = browser.addSmartAction(sa);
             
-            if (browser.getEnableEventSmartLinks()) {
+            if (browser.getEnableContentRewriting()) {
                 return actionLink(actionId, sa.getShortDescription());
             }
         }

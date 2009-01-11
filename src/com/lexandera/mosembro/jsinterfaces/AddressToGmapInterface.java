@@ -55,7 +55,7 @@ public class AddressToGmapInterface extends AbstractJSInterface
             
             int actionId = browser.addSmartAction(sa);
             
-            if (browser.getEnableLocationSmartLinks()) {
+            if (browser.getEnableContentRewriting()) {
                 return actionLink(actionId, sa.getShortDescription());
             }
         }

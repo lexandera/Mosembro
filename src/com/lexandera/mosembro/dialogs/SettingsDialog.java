@@ -18,19 +18,15 @@ public class SettingsDialog extends Dialog
         
         setContentView(R.layout.settings_dialog);
         
-        final CheckBox enableLocationLinksCbox = (CheckBox)findViewById(R.id.enable_location_smart_links);
-        enableLocationLinksCbox.setChecked(browser.getEnableLocationSmartLinks());
-        
-        final CheckBox enableEventLinksCbox = (CheckBox)findViewById(R.id.enable_event_smart_links);
-        enableEventLinksCbox.setChecked(browser.getEnableEventSmartLinks());
+        final CheckBox enableContentRewritingCbox = (CheckBox)findViewById(R.id.enable_content_rewriting);
+        enableContentRewritingCbox.setChecked(browser.getEnableContentRewriting());
         
         Button saveBtn = (Button)findViewById(R.id.settings_save);
         saveBtn.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View arg0)
             {
-                browser.setEnableEventSmartLinks(enableEventLinksCbox.isChecked());
-                browser.setEnableLocationSmartLinks(enableLocationLinksCbox.isChecked());
+                browser.setEnableContentRewriting(enableContentRewritingCbox.isChecked());
                 
                 browser.savePreferences();
                 dialog.dismiss();
