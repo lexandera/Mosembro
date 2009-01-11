@@ -110,15 +110,17 @@ public class Mosembro extends Activity {
             @Override
             public void onPageFinished(WebView view, String url)
             {
-                /* This might be done better by calling loadUrl() separately
-                 * for each of the scripts. That way an error in one of the scripts would
-                 * not cause all the subsequent scripts to fail (but it might be slower...) */
-                getWebView().loadUrl("javascript:(function(){ " +
-                        getScript(R.raw.common) + " " +
-                        getScript(R.raw.search_form) + " " +
-                        getScript(R.raw.address_to_gmap) + " " +
-                        getScript(R.raw.event_to_gcal) + " " +
-                		" })()");
+                String commonJS = getScript(R.raw.common);
+                String[] scripts = {getScript(R.raw.search_form),
+                                    getScript(R.raw.address_to_gmap),
+                                    getScript(R.raw.event_to_gcal)};
+                
+                for (String script : scripts) {
+                    getWebView().loadUrl("javascript:(function(){ " + 
+                                         commonJS + " " +
+                                         script + " })()");
+                }
+
                 super.onPageFinished(view, url);
             }
         });
