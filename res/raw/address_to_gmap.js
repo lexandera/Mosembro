@@ -1,20 +1,24 @@
 
-/* Locates 'adr' elements and extracts location information from them, which it then passes to AddressToGmapInterface */
 (function() {
-    var addrs = getElementsByAttribute(document.body, '*', 'class', 'adr');
-    
-    for (var i = 0; i < addrs.length; i++) {
-    	var addr = addrs[i];
-    	
-    	var streets = getElementsByAttribute(addr, '*', 'class', 'street-address');
-    	var localities = getElementsByAttribute(addr, '*', 'class', 'locality');
-    	var postalCodes = getElementsByAttribute(addr, '*', 'class', 'postal-code');
-    	
-    	var appendHTML;
-    	if (appendHTML = window.AddressToGmapInterface.addAddress(streets[0].innerHTML, localities[0].innerHTML, postalCodes[0].innerHTML)) {
-    		/* rewrite contents - append action link */
-    		addr.innerHTML = addr.innerHTML + appendHTML;
-    	}
-    	
-    }
+	
+	var AddressToGmap = function() { };
+
+	AddressToGmap.prototype.process = function(data)
+	{
+        if (data['street-address'] != null && (data['locality'] != null || data['postal-code'] != null)) {
+            var fullAddr = data['street-address']
+                    + (data['locality'] != null ? ", " + data['locality'] : "")
+                    + (data['postal-code'] != null ? ", " + data['postal-code'] : "");
+            
+            return {'intent-action': 'ACTION_VIEW',
+            		'intent-url': "geo:0,0?q=" + encodeURIComponent(fullAddr),
+            		'icon': 'map',
+            		'description-short': 'Show "' + data['street-address'] + '" on map',
+            		'description-long': 'Show "' + data['street-address'] + '" using maps application'};
+        }
+		
+		return null;
+	}
+	
+	return new AddressToGmap();
 })();

@@ -25,8 +25,6 @@ import com.lexandera.mosembro.dialogs.SettingsDialog;
 import com.lexandera.mosembro.dialogs.SiteSearchDialog;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
 import com.lexandera.mosembro.jsinterfaces.ActionInterface;
-import com.lexandera.mosembro.jsinterfaces.AddressToGmapInterface;
-import com.lexandera.mosembro.jsinterfaces.EventToGcalInterface;
 import com.lexandera.mosembro.jsinterfaces.SiteSearchInterface;
 
 /**
@@ -93,8 +91,6 @@ public class Mosembro extends Activity {
         /* Register JS interfaces used by scripts located in /res/raw/ */
         wv.addJavascriptInterface(new ActionInterface(this), "ActionInterface");
         wv.addJavascriptInterface(new SiteSearchInterface(this), "SiteSearchInterface");
-        wv.addJavascriptInterface(new AddressToGmapInterface(this), "AddressToGmapInterface");
-        wv.addJavascriptInterface(new EventToGcalInterface(this), "EventToGcalInterface");
         
         wv.setWebViewClient(new WebViewClient()
         {
@@ -109,9 +105,7 @@ public class Mosembro extends Activity {
             public void onPageFinished(WebView view, String url)
             {
                 String commonJS = getScript(R.raw.common);
-                String[] scripts = {getScript(R.raw.search_form),
-                                    getScript(R.raw.address_to_gmap),
-                                    getScript(R.raw.event_to_gcal)};
+                String[] scripts = {getScript(R.raw.parser_adr), getScript(R.raw.parser_vevent)};
                 
                 for (String script : scripts) {
                     getWebView().loadUrl("javascript:(function(){ " + 

@@ -1,37 +1,28 @@
 
-/* Locates 'vevent' elements and extracts event information from them, which it then passes to EventToGcalInterface  */
-(function() {
-    var events = getElementsByAttribute(document.body, '*', 'class', 'vevent');
-    
-    for (var i = 0; i < events.length; i++) {
-    	var event = events[i];
-    	
-    	var eventLocation = getElementsByAttribute(event, '*', 'class', 'location');
-    	var eventSummary = getElementsByAttribute(event, '*', 'class', 'summary');
-    	var startDate = getElementsByAttribute(event, '*', 'class', 'dtstart');
-    	var endDate = getElementsByAttribute(event, '*', 'class', 'dtend');
+/* Locates 'vevent' elements and extracts event information from them */
 
-    	if (eventLocation.length > 0) {
-    		eventLocation = eventLocation[0].innerHTML;
-    	}
-    	if (eventSummary.length > 0) {
-    		eventSummary = eventSummary[0].innerHTML;
-    	}
-    	if (startDate.length > 0) {
-    		startDate = startDate[0].getAttribute('title');
-    	}
-    	if (endDate.length > 0) {
-    		endDate = endDate[0].getAttribute('title');
-    	}
-    	if (!endDate) {
-    		endDate = startDate;
-    	}
-    	
-    	var appendHTML;
-    	if (appendHTML = window.EventToGcalInterface.addEvent(eventLocation, eventSummary, startDate, endDate)) {
-    		/* rewrite contents - append action link */
-    		event.innerHTML = event.innerHTML + appendHTML;
+(function() {
+	var EventToGcal = function() { };
+
+	EventToGcal.prototype.process = function(data)
+	{
+    	if (data['summary'] != null && data['dtstart'] != null && data['dtend'] != null) {
+            var addLink = "http://www.google.com/calendar/event?action=TEMPLATE"
+                + "&text=" + encodeURIComponent(data['summary'])
+                + "&dates=" + data['dtstart'] + "/" + data['dtend']
+                + (data['location'] != null ? "&location=" + encodeURIComponent(data['location']) : "");
+    		
+	        return {'intent-action': 'ACTION_VIEW',
+	    	        'intent-url': addLink,
+	                'icon': 'calendar',
+	                'description-short': 'Add "' + eventSummary + '" to my calendar',
+	                'description-long': 'Add "' + eventSummary + '" to my Google calendar'};
     	}
     	
-    }
+
+		return null;
+	}
+	
+	return new EventToGcal();
 })();
+
