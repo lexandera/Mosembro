@@ -34,6 +34,7 @@ public class ActionInterface
         if (category.equals("adr")) {
             jsa.put(browser.getScript(R.raw.address_to_gmap));
             jsa.put(browser.getScript(R.raw.adr_journeyplanner));
+            jsa.put(browser.getScript(R.raw.adr_bayarea_tripplanner));
         }
         else if (category.equals("vevent")) {
             jsa.put(browser.getScript(R.raw.event_to_gcal));
@@ -84,6 +85,9 @@ public class ActionInterface
                 }
                 else if ("journeyplanner".equals(icon)) {
                     return R.drawable.mf_list_journeyplanner;
+                }
+                else if ("bayarea_tripplanner".equals(icon)) {
+                    return R.drawable.mf_list_bayarea_tripplanner;
                 }
                 
                 return 0;

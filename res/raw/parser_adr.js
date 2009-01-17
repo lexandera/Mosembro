@@ -16,10 +16,14 @@
     	var streets = getElementsByAttribute(addr, '*', 'class', 'street-address');
     	var localities = getElementsByAttribute(addr, '*', 'class', 'locality');
     	var postalCodes = getElementsByAttribute(addr, '*', 'class', 'postal-code');
+    	var regions = getElementsByAttribute(addr, '*', 'class', 'region');
+    	var countries = getElementsByAttribute(addr, '*', 'class', 'country-name');
 
-    	var microformatData = {'street-address': streets[0].innerHTML,
-    			               'locality': localities[0].innerHTML,
-    			               'postal-code': postalCodes[0].innerHTML};
+    	var microformatData = {'street-address': (streets[0] ? streets[0].innerHTML : null),
+    			               'locality': (localities[0] ? localities[0].innerHTML : null),
+    			               'postal-code': (postalCodes[0] ? postalCodes[0].innerHTML : null),
+    			               'region': (regions[0] ? regions[0].innerHTML : null),
+    			               'country-name': (countries[0] ? countries[0].innerHTML : null)};
     	
     	for (var x=0; x<scripts.length; x++) {
     		var obj;
