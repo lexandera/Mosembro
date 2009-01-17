@@ -29,6 +29,12 @@ public class SiteSearchInterface
         siteSearchConfig.put("inputName", inputName);
         siteSearchConfig.put("searchDescription", searchDescription);
         browser.setSiteSearchOptions(true, siteSearchConfig);
+        browser.runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                browser.updateTitleIcons();
+            }});
     }
     
 }

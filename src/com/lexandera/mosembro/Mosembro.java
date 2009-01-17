@@ -11,6 +11,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -112,7 +113,7 @@ public class Mosembro extends Activity {
             public void onPageFinished(WebView view, String url)
             {
                 String commonJS = getScript(R.raw.common);
-                String[] scripts = {getScript(R.raw.parser_adr), getScript(R.raw.parser_vevent)};
+                String[] scripts = {getScript(R.raw.search_form), getScript(R.raw.parser_adr), getScript(R.raw.parser_vevent)};
                 
                 for (String script : scripts) {
                     getWebView().loadUrl("javascript:(function(){ " + 
@@ -121,6 +122,15 @@ public class Mosembro extends Activity {
                 }
 
                 super.onPageFinished(view, url);
+            }
+            
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon)
+            {
+                setSiteSearchOptions(false, null);
+                resetSmartActions();
+                
+                super.onPageStarted(view, url, favicon);
             }
         });
         
@@ -246,9 +256,6 @@ public class Mosembro extends Activity {
         }
         
         lastTargetURL = targetURL;
-        
-        setSiteSearchOptions(false, null);
-        resetSmartActions();
         setTitle("Loading "+targetURL);
         
         getWebView().loadUrl(targetURL);

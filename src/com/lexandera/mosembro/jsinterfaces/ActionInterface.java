@@ -87,6 +87,12 @@ public class ActionInterface
         };
         
         int actionId = browser.addSmartAction(sa);
+        browser.runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                browser.updateTitleIcons();
+            }});
         
         if (browser.getEnableContentRewriting()) {
             return actionLink(actionId, sa.getShortDescription());
