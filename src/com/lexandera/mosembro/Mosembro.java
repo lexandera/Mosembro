@@ -8,17 +8,24 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.webkit.JsPromptResult;
+import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.EditText;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.lexandera.mosembro.dialogs.GoToDialog;
 import com.lexandera.mosembro.dialogs.SettingsDialog;
@@ -119,6 +126,93 @@ public class Mosembro extends Activity {
         
         wv.setWebChromeClient(new WebChromeClient()
         {
+            @Override
+            public boolean onJsAlert(WebView view, String url, String message, final JsResult result) 
+            {
+                new AlertDialog.Builder(Mosembro.this)
+                    .setTitle("javaScript dialog")
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok,
+                            new AlertDialog.OnClickListener() 
+                            {
+                                public void onClick(DialogInterface dialog, int which) 
+                                {
+                                    result.confirm();
+                                }
+                            })
+                    .setCancelable(false)
+                    .create()
+                    .show();
+                
+                return true;
+            };
+            
+            @Override
+            public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) 
+            {
+                new AlertDialog.Builder(Mosembro.this)
+                    .setTitle("javaScript dialog")
+                    .setMessage(message)
+                    .setPositiveButton(android.R.string.ok, 
+                            new DialogInterface.OnClickListener() 
+                            {
+                                public void onClick(DialogInterface dialog, int which) 
+                                {
+                                    result.confirm();
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel, 
+                            new DialogInterface.OnClickListener() 
+                            {
+                                public void onClick(DialogInterface dialog, int which) 
+                                {
+                                    result.cancel();
+                                }
+                            })
+                .create()
+                .show();
+            
+                return true;
+            };
+            
+            @Override
+            public boolean onJsPrompt(WebView view, String url, String message, String defaultValue, final JsPromptResult result) 
+            {
+                final LayoutInflater factory = LayoutInflater.from(Mosembro.this);
+                final View v = factory.inflate(R.layout.javascript_prompt_dialog, null);
+                ((TextView)v.findViewById(R.id.prompt_message_text)).setText(message);
+                ((EditText)v.findViewById(R.id.prompt_input_field)).setText(defaultValue);
+
+                new AlertDialog.Builder(Mosembro.this)
+                    .setTitle("javaScript dialog")
+                    .setView(v)
+                    .setPositiveButton(android.R.string.ok,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    String value = ((EditText)v.findViewById(R.id.prompt_input_field)).getText()
+                                            .toString();
+                                    result.confirm(value);
+                                }
+                            })
+                    .setNegativeButton(android.R.string.cancel,
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    result.cancel();
+                                }
+                            })
+                    .setOnCancelListener(
+                            new DialogInterface.OnCancelListener() {
+                                public void onCancel(DialogInterface dialog) {
+                                    result.cancel();
+                                }
+                            })
+                    .show();
+                
+                return true;
+            };
+
+            
+            
             @Override
             public void onProgressChanged(WebView view, int newProgress)
             {
