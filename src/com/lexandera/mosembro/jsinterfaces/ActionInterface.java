@@ -33,6 +33,7 @@ public class ActionInterface
         
         if (category.equals("adr")) {
             jsa.put(browser.getScript(R.raw.address_to_gmap));
+            jsa.put(browser.getScript(R.raw.adr_journeyplanner));
         }
         else if (category.equals("vevent")) {
             jsa.put(browser.getScript(R.raw.event_to_gcal));
@@ -80,6 +81,9 @@ public class ActionInterface
                 }
                 else if ("map".equals(icon)) {
                     return R.drawable.mf_list_map;
+                }
+                else if ("journeyplanner".equals(icon)) {
+                    return R.drawable.mf_list_journeyplanner;
                 }
                 
                 return 0;
