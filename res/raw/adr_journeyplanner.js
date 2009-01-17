@@ -15,7 +15,7 @@
             		'intent-url': "http://lexandera.com/mosembrodemo/tflplanner.php?dest=" + encodeURIComponent(fullAddr),
             		'icon': 'journeyplanner',
             		'description-short': 'Travel to "' + data['street-address'] + '"',
-            		'description-long': 'travel to "' + data['street-address'] + '"'};
+            		'description-long': 'Travel to "' + data['street-address'] + '"'};
         	}
         }
 		
