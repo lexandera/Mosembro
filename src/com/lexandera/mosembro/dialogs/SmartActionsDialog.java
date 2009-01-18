@@ -1,5 +1,6 @@
 package com.lexandera.mosembro.dialogs;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.app.Dialog;
@@ -23,18 +24,36 @@ public class SmartActionsDialog extends Dialog
     Mosembro browser;
     ListView saList;
     
+    public SmartActionsDialog(Context context, final Mosembro browser, int actionGroup)
+    {
+        super(context);
+        init(context, browser, actionGroup);
+    }
+    
     public SmartActionsDialog(Context context, final Mosembro browser)
     {
         super(context);
-        
+        init(context, browser, -1);
+    }
+    
+    void init(Context context, final Mosembro browser, int actionGroup)
+    {
         this.browser = browser;
         final SmartActionsDialog dialog = this;
+        ArrayList<SmartAction> actions;
         
         setContentView(R.layout.smart_actions_dialog);
         this.setTitle("Smart actions");
         
+        if (actionGroup < 0) {
+            actions = browser.getSmartActions();
+        }
+        else {
+            actions = browser.getSmartActionsForGroup(actionGroup);
+        }
+        
         SmartListArrayAdapter<SmartAction> saAdapter = new SmartListArrayAdapter<SmartAction>(
-                context, R.layout.smart_list_row, R.id.smart_list_text, browser.getSmartActions());
+                context, R.layout.smart_list_row, R.id.smart_list_text, actions);
         
         saList = (ListView)findViewById(R.id.smart_actions_list);
         saList.setAdapter(saAdapter);
@@ -48,7 +67,6 @@ public class SmartActionsDialog extends Dialog
             }
             
         });
-        
     }
     
     private class SmartListArrayAdapter<E extends SmartAction> extends ArrayAdapter<E>

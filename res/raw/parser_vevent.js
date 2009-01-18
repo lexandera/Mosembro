@@ -39,7 +39,10 @@
 			                   'summary': eventSummary,
 			                   'dtstart': startDate,
 			                   'dtend': endDate};
-	
+    	
+    	var showLink = false;
+    	var groupId = window.ActionInterface.startNewActionGroup();
+    	
     	for (var x=0; x<scripts.length; x++) {
     		var obj;
     		eval("obj = " + scripts[x]);
@@ -53,9 +56,17 @@
 									    					actionData['description-long']);
     			
     			if (link) {
-    				event.innerHTML += link;
+    				showLink = true;
     			}
     		}
+    	}
+    	if (showLink) {
+    		var txt = microformatData['summary'];
+    		if (txt.length > 23) {
+    			txt = txt.substring(0, 20) + '...';
+    		}
+    		
+    		event.innerHTML += window.ActionInterface.actionGroupLink(groupId, 'Actions for "'+txt+'"');
     	}
     }
 })();

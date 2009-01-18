@@ -25,6 +25,9 @@
     			               'region': (regions[0] ? regions[0].innerHTML : null),
     			               'country-name': (countries[0] ? countries[0].innerHTML : null)};
     	
+    	var showLink = false;
+    	var groupId = window.ActionInterface.startNewActionGroup();
+    	
     	for (var x=0; x<scripts.length; x++) {
     		var obj;
     		eval("obj = " + scripts[x]);
@@ -38,9 +41,17 @@
 									    					actionData['description-long']);
     			
     			if (link) {
-    				addr.innerHTML += link;
+    				showLink = true;
     			}
     		}
+    	}
+    	
+    	if (showLink) {
+    		var txt = microformatData['street-address'];
+    		if (txt.length > 23) {
+    			txt = txt.substring(0, 20) + '...';
+    		}
+    		addr.innerHTML += window.ActionInterface.actionGroupLink(groupId, 'Actions for "'+txt+'"');
     	}
     }
 	

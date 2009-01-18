@@ -59,6 +59,7 @@ public class Mosembro extends Activity {
     private boolean canSiteSearch = false;
     private HashMap<String, String> siteSearchConfig;
     private ArrayList<SmartAction> smartActions = new ArrayList<SmartAction>(10);
+    private HashMap<String, ArrayList<SmartAction>> smartActionGroups = new HashMap<String, ArrayList<SmartAction>>(10);
     private MenuItem searchMenuItem;
     private MenuItem microformatsMenuItem;
     private boolean enableContentRewriting;
@@ -272,9 +273,18 @@ public class Mosembro extends Activity {
         this.siteSearchConfig = config;
     }
     
-    public int addSmartAction(SmartAction sa)
+    public int addSmartAction(SmartAction sa, int groupId)
     {
+        String groupKey = "actionGroup" + Integer.toString(groupId);
+        
+        /* create group if it doesn't exist yet */
+        if (!smartActionGroups.containsKey(groupKey)) {
+            smartActionGroups.put(groupKey, new ArrayList<SmartAction>(5));
+        }
+        
         smartActions.add(sa);
+        smartActionGroups.get(groupKey).add(sa);
+        
         return smartActions.size() -1;
     }
     
@@ -282,6 +292,7 @@ public class Mosembro extends Activity {
     {
         synchronized (this.smartActions) {
             smartActions = new ArrayList<SmartAction>(10);
+            smartActionGroups = new HashMap<String, ArrayList<SmartAction>>(10);
             updateTitleIcons();
         }
     }
@@ -291,6 +302,18 @@ public class Mosembro extends Activity {
         synchronized (this.smartActions) {
             return smartActions;
         }
+    }
+    
+    public ArrayList<SmartAction> getSmartActionsForGroup(int groupId)
+    {
+        String groupKey = "actionGroup" + Integer.toString(groupId);
+        synchronized (this.smartActionGroups) {
+            if (smartActionGroups.containsKey(groupKey)) {
+                return smartActionGroups.get(groupKey);
+            }
+        }
+        
+        return null;
     }
     
     public boolean getEnableContentRewriting()

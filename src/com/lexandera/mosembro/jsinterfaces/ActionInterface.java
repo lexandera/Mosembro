@@ -6,6 +6,7 @@ import android.net.Uri;
 import com.lexandera.mosembro.Mosembro;
 import com.lexandera.mosembro.R;
 import com.lexandera.mosembro.SmartAction;
+import com.lexandera.mosembro.dialogs.SmartActionsDialog;
 
 import org.json.JSONArray;
 
@@ -16,15 +17,11 @@ import org.json.JSONArray;
 public class ActionInterface
 {
     Mosembro browser;
+    int actionGroupId = 0;
     
     public ActionInterface(Mosembro browser)
     {
         this.browser = browser;
-    }
-    
-    public void executeAction(int id)
-    {
-        browser.getSmartActions().get(id).execute();
     }
     
     public String getScriptsFor(String category)
@@ -43,8 +40,13 @@ public class ActionInterface
         return jsa.toString();
     }
     
-    public String addAction(final String action, final String uri, final String icon,
-                            final String descShort, final String descLong)
+    public int startNewActionGroup()
+    {
+        return ++actionGroupId;
+    }
+    
+    public boolean addAction(final String action, final String uri, final String icon,
+                             final String descShort, final String descLong)
     {
         final SmartAction sa = new SmartAction()
         {
@@ -94,7 +96,7 @@ public class ActionInterface
             }
         };
         
-        int actionId = browser.addSmartAction(sa);
+        browser.addSmartAction(sa, actionGroupId);
         browser.runOnUiThread(new Runnable() {
             @Override
             public void run()
@@ -103,17 +105,22 @@ public class ActionInterface
             }});
         
         if (browser.getEnableContentRewriting()) {
-            return actionLink(actionId, sa.getShortDescription());
+            return true;
         };
         
-        return null;
+        return false;
     }
     
-    public String actionLink(int actionId, String text)
+    public void showActionGroupDialog(int groupId)
     {
-        return "<div style=\"display: block; clear: both; margin: 5px 5px 5px 2px;\">"+
+        new SmartActionsDialog(browser, browser, groupId).show();
+    }
+    
+    public String actionGroupLink(int groupId, String text)
+    {
+        return "<div style=\"display: block; clear: both; margin: 5px 5px 5px 2px; font-size: 85%;\">"+
             "<a href=\"/null\" " +
-            "onclick=\"window.ActionInterface.executeAction("+Integer.toString(actionId)+"); " +
+            "onclick=\"window.ActionInterface.showActionGroupDialog("+Integer.toString(groupId)+"); " +
             "return false;\">" + text + 
             "</a>" +
             "</div>";
