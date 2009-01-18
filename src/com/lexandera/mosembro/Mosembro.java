@@ -259,6 +259,9 @@ public class Mosembro extends Activity {
         lastTargetURL = targetURL;
         setTitle("Loading "+targetURL);
         
+        setSiteSearchOptions(false, null);
+        resetSmartActions();
+        
         getWebView().loadUrl(targetURL);
     }
     
