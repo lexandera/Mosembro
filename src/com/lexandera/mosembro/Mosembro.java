@@ -293,27 +293,22 @@ public class Mosembro extends Activity {
     
     public void resetSmartActions()
     {
-        synchronized (this.smartActions) {
-            smartActions = new ArrayList<SmartAction>(10);
-            smartActionGroups = new HashMap<String, ArrayList<SmartAction>>(10);
-            updateTitleIcons();
-        }
+        smartActions = new ArrayList<SmartAction>(10);
+        smartActionGroups = new HashMap<String, ArrayList<SmartAction>>(10);
+        updateTitleIcons();
     }
     
     public ArrayList<SmartAction> getSmartActions()
     {
-        synchronized (this.smartActions) {
-            return smartActions;
-        }
+        return smartActions;
     }
     
     public ArrayList<SmartAction> getSmartActionsForGroup(int groupId)
     {
         String groupKey = "actionGroup" + Integer.toString(groupId);
-        synchronized (this.smartActionGroups) {
-            if (smartActionGroups.containsKey(groupKey)) {
-                return smartActionGroups.get(groupKey);
-            }
+
+        if (smartActionGroups.containsKey(groupKey)) {
+            return smartActionGroups.get(groupKey);
         }
         
         return null;
