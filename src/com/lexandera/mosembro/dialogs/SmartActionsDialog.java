@@ -52,6 +52,8 @@ public class SmartActionsDialog extends Dialog
             actions = browser.getSmartActionsForGroup(actionGroup);
         }
         
+        final ArrayList<SmartAction> finalActions = actions;
+        
         SmartListArrayAdapter<SmartAction> saAdapter = new SmartListArrayAdapter<SmartAction>(
                 context, R.layout.smart_list_row, R.id.smart_list_text, actions);
         
@@ -63,7 +65,7 @@ public class SmartActionsDialog extends Dialog
             public void onItemClick(AdapterView parent, View v, int position, long id)
             {
                 dialog.dismiss();
-                browser.getSmartActions().get(position).execute();
+                finalActions.get(position).execute();
             }
             
         });
