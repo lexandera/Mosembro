@@ -1,7 +1,9 @@
 package com.lexandera.mosembro.jsinterfaces;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.ClipboardManager;
 
 import com.lexandera.mosembro.Mosembro;
 import com.lexandera.mosembro.R;
@@ -32,6 +34,7 @@ public class ActionInterface
             jsa.put(browser.getScript(R.raw.address_to_gmap));
             jsa.put(browser.getScript(R.raw.adr_journeyplanner));
             jsa.put(browser.getScript(R.raw.adr_bayarea_tripplanner));
+            jsa.put(browser.getScript(R.raw.adr_copy));
         }
         else if (category.equals("vevent")) {
             jsa.put(browser.getScript(R.raw.event_to_gcal));
@@ -54,13 +57,20 @@ public class ActionInterface
             public void execute()
             {
                 String intentAction = null;
-                try {
-                    intentAction = (String)Intent.class.getField(action).get(null);
-                }
-                catch (Exception e) {}
                 
-                Intent i = new Intent(intentAction, Uri.parse(uri));
-                browser.startActivity(i);
+                if ("TEXT_COPY".equals(action)) {
+                    ClipboardManager clipboard = (ClipboardManager)browser.getSystemService(Context.CLIPBOARD_SERVICE); 
+                    clipboard.setText(uri);
+                }
+                else {
+                    try {
+                        intentAction = (String)Intent.class.getField(action).get(null);
+                    }
+                    catch (Exception e) {}
+                    
+                    Intent i = new Intent(intentAction, Uri.parse(uri));
+                    browser.startActivity(i);
+                }
             }
             
             @Override
@@ -90,6 +100,9 @@ public class ActionInterface
                 }
                 else if ("bayarea_tripplanner".equals(icon)) {
                     return R.drawable.mf_list_bayarea_tripplanner;
+                }
+                else if ("copy".equals(icon)) {
+                    return R.drawable.mf_copy;
                 }
                 
                 return 0;
