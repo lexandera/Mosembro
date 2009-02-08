@@ -7,6 +7,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -38,12 +39,13 @@ public class SmartActionsDialog extends Dialog
     
     void init(Context context, final Mosembro browser, int actionGroup)
     {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
         this.browser = browser;
         final SmartActionsDialog dialog = this;
         ArrayList<SmartAction> actions;
         
         setContentView(R.layout.smart_actions_dialog);
-        this.setTitle("Smart actions");
         
         if (actionGroup < 0) {
             actions = browser.getSmartActions();

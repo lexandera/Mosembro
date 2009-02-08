@@ -3,6 +3,7 @@ package com.lexandera.mosembro.dialogs;
 import android.app.Dialog;
 import android.content.Context;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CheckBox;
 
@@ -16,6 +17,7 @@ public class SettingsDialog extends Dialog
         super(context);
         final SettingsDialog dialog = this;
         
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.settings_dialog);
         
         final CheckBox enableContentRewritingCbox = (CheckBox)findViewById(R.id.enable_content_rewriting);

@@ -3,7 +3,7 @@
     android:orientation="vertical"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    >
+    android:padding="10px">
 <EditText android:id="@+id/search_field"
     android:layout_width="fill_parent" 
     android:layout_height="wrap_content" 
