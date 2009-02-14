@@ -39,19 +39,24 @@ public class ActionStore extends SQLiteOpenHelper
     {
         Resources res = browser.getResources();
         installAction("com.lexandera.scripts.adr_to_gmap", "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_to_gmap));
+                MosembroUtil.readRawString(res, R.raw.adr_to_gmap),
+                MosembroUtil.readRawByteArray(res, R.raw.mf_list_map));
         installAction("com.lexandera.scripts.adr_journeyplanner", "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_journeyplanner));
+                MosembroUtil.readRawString(res, R.raw.adr_journeyplanner),
+                MosembroUtil.readRawByteArray(res, R.raw.mf_list_journeyplanner));
         installAction("com.lexandera.scripts.adr_bayarea_tripplanner", "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_bayarea_tripplanner));
+                MosembroUtil.readRawString(res, R.raw.adr_bayarea_tripplanner),
+                MosembroUtil.readRawByteArray(res, R.raw.mf_list_bayarea_tripplanner));
         installAction("com.lexandera.scripts.adr_copy", "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_copy));
+                MosembroUtil.readRawString(res, R.raw.adr_copy),
+                MosembroUtil.readRawByteArray(res, R.raw.mf_list_copy));
         
         installAction("com.lexandera.scripts.event_to_gcal", "vevent", 
-                MosembroUtil.readRawString(res, R.raw.event_to_gcal));
+                MosembroUtil.readRawString(res, R.raw.event_to_gcal),
+                MosembroUtil.readRawByteArray(res, R.raw.mf_list_calendar));
     }
     
-    public void installAction(String action_id, String handles, String script)
+    public void installAction(String action_id, String handles, String script, byte[] icon)
     {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM actions WHERE action_id = ?;", new String[] { action_id });
@@ -60,6 +65,7 @@ public class ActionStore extends SQLiteOpenHelper
         vals.put("action_id", action_id);
         vals.put("handles", handles);
         vals.put("script", script);
+        vals.put("icon", icon);
         db.insert("actions", null, vals);
     }
     
@@ -74,6 +80,7 @@ public class ActionStore extends SQLiteOpenHelper
             out[i] = data.getString(0);
             ++i;
         }
+        data.close();
         
         return out;
     }

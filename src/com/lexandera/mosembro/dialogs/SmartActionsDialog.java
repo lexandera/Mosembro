@@ -96,7 +96,7 @@ public class SmartActionsDialog extends Dialog
             ll.setPadding(8, 8, 4, 8);
             
             ImageView iv = new ImageView(super.getContext());
-            iv.setImageResource(sa.getIconResourceid());
+            iv.setImageBitmap(sa.getIconBitmap());
             
             LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
             iv.setLayoutParams(iv_lp);

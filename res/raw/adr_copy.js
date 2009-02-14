@@ -1,24 +1,24 @@
 
 (function() {
-	
-	var AdrCopy = function() { };
+    
+    var AdrCopy = function() { };
 
-	AdrCopy.prototype.process = function(data)
-	{
+    AdrCopy.prototype.process = function(data)
+    {
         if (data['street-address'] != null && (data['locality'] != null || data['postal-code'] != null)) {
             var fullAddr = data['street-address']
                     + (data['locality'] != null ? ", " + data['locality'] : "")
                     + (data['postal-code'] != null ? ", " + data['postal-code'] : "");
             
             return {'intent-action': 'TEXT_COPY',
-            		'intent-url': fullAddr,
-            		'icon': 'copy',
-            		'description-short': 'Copy address to clipboard',
-            		'description-long': 'Copy "' + data['street-address'] + '" to clipboard'};
+                    'intent-url': fullAddr,
+                    'icon': 'com.lexandera.scripts.adr_copy',
+                    'description-short': 'Copy address to clipboard',
+                    'description-long': 'Copy "' + data['street-address'] + '" to clipboard'};
         }
-		
-		return null;
-	}
-	
-	return new AdrCopy();
+        
+        return null;
+    }
+    
+    return new AdrCopy();
 })();

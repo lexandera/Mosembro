@@ -1,5 +1,7 @@
 package com.lexandera.mosembro;
 
+import android.graphics.Bitmap;
+
 public abstract class SmartAction
 {
     abstract public void execute();
@@ -8,11 +10,12 @@ public abstract class SmartAction
     
     abstract public String getShortDescription();
     
-    abstract public int getIconResourceid();
-    
+    abstract public Bitmap getIconBitmap();
+
     @Override
     public String toString()
     {
         return getLongDescription();
     }
+
 }

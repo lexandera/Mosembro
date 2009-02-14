@@ -4,6 +4,10 @@ import org.json.JSONArray;
 
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.ClipboardManager;
 
@@ -11,6 +15,7 @@ import com.lexandera.mosembro.Mosembro;
 import com.lexandera.mosembro.R;
 import com.lexandera.mosembro.SmartAction;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
+import com.lexandera.mosembro.util.MosembroUtil;
 
 /** 
  * This JS interface handles window.ActionInterface.execute(id) calls which are
@@ -28,6 +33,8 @@ public class ActionInterface
     
     public String getScriptsFor(String category)
     {
+        // TODO: cache scripts!
+        
         JSONArray jsa = new JSONArray();
         
         String[] actions = browser.getActionStore().getActionsForMicroformat(category);
@@ -43,9 +50,12 @@ public class ActionInterface
         return ++actionGroupId;
     }
     
-    public boolean addAction(final String action, final String uri, final String icon,
+    public boolean addAction(final String action, final String uri, final String icon_for,
                              final String descShort, final String descLong)
     {
+        byte[] defaultBytes = MosembroUtil.readRawByteArray(browser.getResources(), R.raw.mf_list_no_icon);
+        final Bitmap defaultActionBitmap = BitmapFactory.decodeByteArray(defaultBytes, 0, defaultBytes.length);
+        
         final SmartAction sa = new SmartAction()
         {
             @Override
@@ -81,26 +91,25 @@ public class ActionInterface
             }
             
             @Override
-            public int getIconResourceid()
+            public Bitmap getIconBitmap()
             {
-                // TODO: better icon support!
-                if ("calendar".equals(icon)) {
-                    return R.drawable.mf_list_calendar;
-                }
-                else if ("map".equals(icon)) {
-                    return R.drawable.mf_list_map;
-                }
-                else if ("journeyplanner".equals(icon)) {
-                    return R.drawable.mf_list_journeyplanner;
-                }
-                else if ("bayarea_tripplanner".equals(icon)) {
-                    return R.drawable.mf_list_bayarea_tripplanner;
-                }
-                else if ("copy".equals(icon)) {
-                    return R.drawable.mf_copy;
-                }
+                // TODO: cache icons!
                 
-                return 0;
+                SQLiteDatabase db = browser.getActionStore().getReadableDatabase();
+                Cursor data = db.rawQuery("SELECT icon FROM actions WHERE action_id = ?", new String[] { icon_for });
+                Bitmap bm = null;
+                
+                if (data.moveToFirst()) {
+                    byte[] bytes = data.getBlob(0);
+                    bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+                }
+                data.close();
+                
+                if (bm == null) {
+                    bm = defaultActionBitmap;
+                }
+            
+                return bm;
             }
         };
         
