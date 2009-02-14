@@ -1,0 +1,2 @@
+
+CREATE TABLE IF EXISTS actions;

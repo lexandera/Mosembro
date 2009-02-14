@@ -1,5 +1,7 @@
 package com.lexandera.mosembro.jsinterfaces;
 
+import org.json.JSONArray;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -9,8 +11,6 @@ import com.lexandera.mosembro.Mosembro;
 import com.lexandera.mosembro.R;
 import com.lexandera.mosembro.SmartAction;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
-
-import org.json.JSONArray;
 
 /** 
  * This JS interface handles window.ActionInterface.execute(id) calls which are
@@ -30,14 +30,9 @@ public class ActionInterface
     {
         JSONArray jsa = new JSONArray();
         
-        if (category.equals("adr")) {
-            jsa.put(browser.getScript(R.raw.address_to_gmap));
-            jsa.put(browser.getScript(R.raw.adr_journeyplanner));
-            jsa.put(browser.getScript(R.raw.adr_bayarea_tripplanner));
-            jsa.put(browser.getScript(R.raw.adr_copy));
-        }
-        else if (category.equals("vevent")) {
-            jsa.put(browser.getScript(R.raw.event_to_gcal));
+        String[] actions = browser.getActionStore().getActionsForMicroformat(category);
+        for (int i=0; i<actions.length; i++) {
+            jsa.put(actions[i]);
         }
         
         return jsa.toString();

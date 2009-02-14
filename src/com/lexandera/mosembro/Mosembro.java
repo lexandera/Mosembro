@@ -1,9 +1,5 @@
 package com.lexandera.mosembro;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -34,6 +30,7 @@ import com.lexandera.mosembro.dialogs.SiteSearchDialog;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
 import com.lexandera.mosembro.jsinterfaces.ActionInterface;
 import com.lexandera.mosembro.jsinterfaces.SiteSearchInterface;
+import com.lexandera.mosembro.util.MosembroUtil;
 
 /**
  * Mosembro - Mobile semantic browser
@@ -60,6 +57,7 @@ public class Mosembro extends Activity {
     private HashMap<String, String> siteSearchConfig;
     private ArrayList<SmartAction> smartActions = new ArrayList<SmartAction>(10);
     private HashMap<String, ArrayList<SmartAction>> smartActionGroups = new HashMap<String, ArrayList<SmartAction>>(10);
+    private ActionStore actionStore;
     private MenuItem searchMenuItem;
     private MenuItem microformatsMenuItem;
     private boolean enableContentRewriting;
@@ -85,6 +83,9 @@ public class Mosembro extends Activity {
         
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         enableContentRewriting = settings.getBoolean("enableContentRewriting", true);
+        
+        actionStore = new ActionStore(this);
+        actionStore.updateBuiltInActions();
         
         wv = (WebView)findViewById(R.id.browser);
         
@@ -376,28 +377,13 @@ public class Mosembro extends Activity {
      */
     public String getScript(int resourceId)
     {
-        InputStream is = getResources().openRawResource(resourceId);
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-        String line = null;
- 
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line + "\n");
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
- 
-        return sb.toString();
+        return MosembroUtil.readRawString(getResources(), resourceId);
     }
     
+    public ActionStore getActionStore()
+    {
+        return actionStore;
+    }
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
