@@ -26,7 +26,7 @@ public class GoToDialog extends Dialog
         setTitle("Open URL");
         
         urlField = (EditText)findViewById(R.id.go_to_url_field);
-        urlField.setText(browser.getLastUrl());
+        urlField.setText(browser.getLastEnteredUrl());
 
         urlField.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event)

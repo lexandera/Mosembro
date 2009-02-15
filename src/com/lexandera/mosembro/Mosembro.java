@@ -61,7 +61,7 @@ public class Mosembro extends Activity {
     private MenuItem searchMenuItem;
     private MenuItem microformatsMenuItem;
     private boolean enableContentRewriting;
-    private String lastTargetURL = "";
+    private String lastEnteredURL = "";
     
     static final int MENU_GO_TO = 1;
     static final int MENU_RELOAD = 2;
@@ -257,7 +257,7 @@ public class Mosembro extends Activity {
             targetURL = "http://" + targetURL;
         }
         
-        lastTargetURL = targetURL;
+        lastEnteredURL = targetURL;
         setTitle("Loading "+targetURL);
         
         setSiteSearchOptions(false, null);
@@ -325,9 +325,9 @@ public class Mosembro extends Activity {
         enableContentRewriting = enable;
     }
     
-    public String getLastUrl()
+    public String getLastEnteredUrl()
     {
-        return lastTargetURL;
+        return lastEnteredURL;
     }
     
     public void updateProgress(int progress)
@@ -448,7 +448,7 @@ public class Mosembro extends Activity {
                 
             case MENU_RELOAD:
                 /* reload */
-                loadWebPage(lastTargetURL);
+                wv.reload();
                 return true;
                 
             case MENU_SITE_SEARCH:
