@@ -142,7 +142,7 @@ public class Mosembro extends Activity {
             public boolean onJsAlert(WebView view, String url, String message, final JsResult result) 
             {
                 new AlertDialog.Builder(Mosembro.this)
-                    .setTitle("javaScript dialog")
+                    .setTitle(R.string.title_dialog_alert)
                     .setMessage(message)
                     .setPositiveButton(android.R.string.ok,
                             new AlertDialog.OnClickListener() 
@@ -163,7 +163,7 @@ public class Mosembro extends Activity {
             public boolean onJsConfirm(WebView view, String url, String message, final JsResult result) 
             {
                 new AlertDialog.Builder(Mosembro.this)
-                    .setTitle("javaScript dialog")
+                    .setTitle(R.string.title_dialog_confirm)
                     .setMessage(message)
                     .setPositiveButton(android.R.string.ok, 
                             new DialogInterface.OnClickListener() 
@@ -196,7 +196,7 @@ public class Mosembro extends Activity {
                 ((EditText)v.findViewById(R.id.prompt_input_field)).setText(defaultValue);
 
                 new AlertDialog.Builder(Mosembro.this)
-                    .setTitle("javaScript dialog")
+                    .setTitle(R.string.title_dialog_prompt)
                     .setView(v)
                     .setPositiveButton(android.R.string.ok,
                             new DialogInterface.OnClickListener() {
@@ -392,19 +392,19 @@ public class Mosembro extends Activity {
         
         MenuItem menuItem;
         
-        menuItem = menu.add(Menu.NONE, MENU_GO_TO, Menu.NONE, "Go to...");
+        menuItem = menu.add(Menu.NONE, MENU_GO_TO, Menu.NONE, R.string.menu_go_to);
         menuItem.setIcon(R.drawable.menu_go_to);
         
-        menuItem = menu.add(Menu.NONE, MENU_RELOAD, Menu.NONE, "Refresh");
+        menuItem = menu.add(Menu.NONE, MENU_RELOAD, Menu.NONE, R.string.menu_reload);
         menuItem.setIcon(R.drawable.menu_refresh);
         
-        microformatsMenuItem = menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, "Settings");
+        microformatsMenuItem = menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, R.string.menu_settings);
         microformatsMenuItem.setIcon(R.drawable.menu_microformats_settings);
         
-        searchMenuItem = menu.add(Menu.NONE, MENU_SITE_SEARCH, Menu.NONE, "Search site");
+        searchMenuItem = menu.add(Menu.NONE, MENU_SITE_SEARCH, Menu.NONE, R.string.menu_search_site);
         searchMenuItem.setIcon(R.drawable.menu_site_search2_disabled);
         
-        microformatsMenuItem = menu.add(Menu.NONE, MENU_SMART_ACTIONS, Menu.NONE, "Smart actions");
+        microformatsMenuItem = menu.add(Menu.NONE, MENU_SMART_ACTIONS, Menu.NONE, R.string.menu_smart_actions);
         microformatsMenuItem.setIcon(R.drawable.menu_microformats3_disabled);
         
         return true;

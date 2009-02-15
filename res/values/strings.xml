@@ -1,6 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hello">Hello World, Mosembro</string>
-    <string name="app_name">Mosembro</string>
-<string name="app_name_long">Mobile semantic browser</string>
+	<string name="hello">Hello World, Mosembro</string>
+	<string name="app_name">Mosembro</string>
+	<string name="app_name_long">Mobile semantic browser</string>
+	<string name="menu_go_to">Go to...</string>
+	<string name="menu_reload">Reload</string>
+	<string name="menu_settings">Settings</string>
+	<string name="menu_search_site">Search site</string>
+	<string name="menu_smart_actions">Smart actions</string>
+	<string name="title_dialog_alert">JavaScript dialog</string>
+	<string name="title_dialog_confirm">JavaScript dialog</string>
+	<string name="title_dialog_prompt">JavaScript dialog</string>
 </resources>
