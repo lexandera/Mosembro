@@ -1,7 +1,8 @@
 
 CREATE TABLE actions (
     action_id TEXT PRIMARY KEY, 
-    handles TEXT, 
+    type TEXT,
+    handles TEXT,
     name TEXT, 
     description TEXT, 
     script TEXT,

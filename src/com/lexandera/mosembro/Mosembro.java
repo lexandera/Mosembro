@@ -83,7 +83,7 @@ public class Mosembro extends Activity {
         
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
         enableContentRewriting = settings.getBoolean("enableContentRewriting", true);
-        
+       
         actionStore = new ActionStore(this);
         actionStore.updateBuiltInActions();
         
@@ -129,6 +129,24 @@ public class Mosembro extends Activity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
+                if (url.endsWith(".action.js")) {
+                    new AlertDialog.Builder(Mosembro.this)
+                        .setTitle("Mosembro action detected")
+                        .setMessage("Ya knows what... That thar file sure looks like a Mosembro action script. Wanna install it?")
+                        .setPositiveButton("Sure do!", 
+                                new AlertDialog.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    {
+                                        // TODO Auto-generated method stub
+                                    }
+                                })
+                        .setNegativeButton("Not really.", null)
+                        .create()
+                        .show();
+                }
+                
                 setSiteSearchOptions(false, null);
                 resetSmartActions();
                 
