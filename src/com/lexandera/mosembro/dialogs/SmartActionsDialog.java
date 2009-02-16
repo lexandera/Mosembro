@@ -54,6 +54,10 @@ public class SmartActionsDialog extends Dialog
             actions = browser.getSmartActionsForGroup(actionGroup);
         }
         
+        if (actions == null) {
+            return;
+        }
+        
         final ArrayList<SmartAction> finalActions = actions;
         
         SmartListArrayAdapter<SmartAction> saAdapter = new SmartListArrayAdapter<SmartAction>(

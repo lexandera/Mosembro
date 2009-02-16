@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -127,9 +128,11 @@ public class Mosembro extends Activity {
             }
             
             @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon)
+            public void onPageStarted(WebView view, final String url, Bitmap favicon)
             {
                 if (url.endsWith(".action.js")) {
+                    view.stopLoading();
+                    
                     new AlertDialog.Builder(Mosembro.this)
                         .setTitle("Mosembro action detected")
                         .setMessage("Ya knows what... That thar file sure looks like a Mosembro action script. Wanna install it?")
@@ -139,12 +142,25 @@ public class Mosembro extends Activity {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which)
                                     {
-                                        // TODO Auto-generated method stub
+                                        Resources res = getResources();
+                                        String script = MosembroUtil.readRemoteString(res, url);
+                                        HashMap<String, String> vals = MosembroUtil.parseActionScript(script);
+                                        
+                                        if (vals != null) {
+                                            getActionStore().installAction(vals.get("id"), 
+                                                                           "microformat", 
+                                                                           vals.get("handles"), 
+                                                                           script, 
+                                                                           MosembroUtil.readRemoteByteArray(res, vals.get("icon")));
+                                        }
+                                        
                                     }
                                 })
                         .setNegativeButton("Not really.", null)
                         .create()
                         .show();
+                    
+                    return;
                 }
                 
                 setSiteSearchOptions(false, null);
@@ -278,8 +294,8 @@ public class Mosembro extends Activity {
         lastEnteredURL = targetURL;
         setTitle("Loading "+targetURL);
         
-        setSiteSearchOptions(false, null);
-        resetSmartActions();
+//        setSiteSearchOptions(false, null);
+//        resetSmartActions();
         
         getWebView().loadUrl(targetURL);
     }
