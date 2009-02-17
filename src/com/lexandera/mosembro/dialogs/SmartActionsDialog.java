@@ -25,19 +25,19 @@ public class SmartActionsDialog extends Dialog
     Mosembro browser;
     ListView saList;
     
-    public SmartActionsDialog(Context context, final Mosembro browser, int actionGroup)
+    public SmartActionsDialog(final Mosembro browser, int actionGroup)
     {
-        super(context);
-        init(context, browser, actionGroup);
+        super(browser);
+        init(browser, actionGroup);
     }
     
-    public SmartActionsDialog(Context context, final Mosembro browser)
+    public SmartActionsDialog(final Mosembro browser)
     {
-        super(context);
-        init(context, browser, -1);
+        super(browser);
+        init(browser, -1);
     }
     
-    void init(Context context, final Mosembro browser, int actionGroup)
+    void init(final Mosembro browser, int actionGroup)
     {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -61,8 +61,9 @@ public class SmartActionsDialog extends Dialog
         final ArrayList<SmartAction> finalActions = actions;
         
         SmartListArrayAdapter<SmartAction> saAdapter = new SmartListArrayAdapter<SmartAction>(
-                context, R.layout.smart_list_row, R.id.smart_list_text, actions);
+                browser, R.layout.smart_list_row, R.id.smart_list_text, actions);
         
+       
         saList = (ListView)findViewById(R.id.smart_actions_list);
         saList.setAdapter(saAdapter);
         saList.setOnItemClickListener(new OnItemClickListener()

@@ -26,6 +26,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.lexandera.mosembro.dialogs.GoToDialog;
+import com.lexandera.mosembro.dialogs.ManageActionsDialog;
 import com.lexandera.mosembro.dialogs.SettingsDialog;
 import com.lexandera.mosembro.dialogs.SiteSearchDialog;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
@@ -69,6 +70,7 @@ public class Mosembro extends Activity {
     static final int MENU_SITE_SEARCH = 3;
     static final int MENU_SMART_ACTIONS = 4;
     static final int MENU_SETTINGS = 5;
+    static final int MENU_MANAGE_SCRIPTS = 6;
     
     /** Called when the activity is first created. */
     @Override
@@ -148,6 +150,7 @@ public class Mosembro extends Activity {
                                         
                                         if (vals != null) {
                                             getActionStore().installAction(vals.get("id"), 
+                                                                           vals.get("name"), 
                                                                            "microformat", 
                                                                            vals.get("handles"), 
                                                                            script, 
@@ -424,22 +427,23 @@ public class Mosembro extends Activity {
     {
         super.onCreateOptionsMenu(menu);
         
-        MenuItem menuItem;
+        menu.add(Menu.NONE, MENU_GO_TO, Menu.NONE, R.string.menu_go_to)
+            .setIcon(R.drawable.menu_go_to);
         
-        menuItem = menu.add(Menu.NONE, MENU_GO_TO, Menu.NONE, R.string.menu_go_to);
-        menuItem.setIcon(R.drawable.menu_go_to);
+        menu.add(Menu.NONE, MENU_RELOAD, Menu.NONE, R.string.menu_reload)
+        .setIcon(R.drawable.menu_refresh);
         
-        menuItem = menu.add(Menu.NONE, MENU_RELOAD, Menu.NONE, R.string.menu_reload);
-        menuItem.setIcon(R.drawable.menu_refresh);
-        
-        microformatsMenuItem = menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, R.string.menu_settings);
-        microformatsMenuItem.setIcon(R.drawable.menu_microformats_settings);
+        microformatsMenuItem = menu.add(Menu.NONE, MENU_SMART_ACTIONS, Menu.NONE, R.string.menu_smart_actions);
+        microformatsMenuItem.setIcon(R.drawable.menu_microformats3_disabled);
         
         searchMenuItem = menu.add(Menu.NONE, MENU_SITE_SEARCH, Menu.NONE, R.string.menu_search_site);
         searchMenuItem.setIcon(R.drawable.menu_site_search2_disabled);
         
-        microformatsMenuItem = menu.add(Menu.NONE, MENU_SMART_ACTIONS, Menu.NONE, R.string.menu_smart_actions);
-        microformatsMenuItem.setIcon(R.drawable.menu_microformats3_disabled);
+        menu.add(Menu.NONE, MENU_SETTINGS, Menu.NONE, R.string.menu_settings)
+            .setIcon(R.drawable.menu_microformats_settings);
+        
+        menu.add(Menu.NONE, MENU_MANAGE_SCRIPTS, Menu.NONE, R.string.menu_manage_scripts)
+            .setIcon(R.drawable.menu_manage_scripts);
         
         return true;
     }
@@ -477,7 +481,7 @@ public class Mosembro extends Activity {
         switch (item.getItemId()) {
             case MENU_GO_TO:
                 /* open URL dialog */
-                new GoToDialog(this, this).show();
+                new GoToDialog(this).show();
                 return true;
                 
             case MENU_RELOAD:
@@ -488,19 +492,23 @@ public class Mosembro extends Activity {
             case MENU_SITE_SEARCH:
                 /* site search */
                 if (canSiteSearch) {
-                    new SiteSearchDialog(this, this, siteSearchConfig).show();
+                    new SiteSearchDialog(this, siteSearchConfig).show();
                 }
                 return true;
                 
             case MENU_SMART_ACTIONS:
                 /* microformats */
                 if (smartActions.size() > 0) {
-                    new SmartActionsDialog(this, this).show();
+                    new SmartActionsDialog(this).show();
                 }
                 return true;
                 
             case MENU_SETTINGS:
-                new SettingsDialog(this, this).show();
+                new SettingsDialog(this).show();
+                return true;
+                
+            case MENU_MANAGE_SCRIPTS:
+                new ManageActionsDialog(this).show();
                 return true;
         }
                 

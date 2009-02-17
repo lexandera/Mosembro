@@ -1,7 +1,6 @@
 package com.lexandera.mosembro.dialogs;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -15,9 +14,9 @@ public class GoToDialog extends Dialog
     Mosembro browser;
     EditText urlField;
     
-    public GoToDialog(Context context, final Mosembro browser)
+    public GoToDialog(final Mosembro browser)
     {
-        super(context);
+        super(browser);
         
         this.browser = browser;
         final GoToDialog dialog = this;

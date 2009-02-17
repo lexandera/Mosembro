@@ -5,7 +5,6 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
@@ -21,9 +20,9 @@ public class SiteSearchDialog extends Dialog
     String formAction = "";
     String inputName = "";
     
-    public SiteSearchDialog(Context context, Mosembro browser, HashMap<String, String> siteSearchConfig)
+    public SiteSearchDialog(Mosembro browser, HashMap<String, String> siteSearchConfig)
     {
-        super(context);
+        super(browser);
         setContentView(R.layout.search_dialog);
         final SiteSearchDialog dialog = this;
         this.formAction = siteSearchConfig.get("formAction");

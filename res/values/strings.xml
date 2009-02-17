@@ -11,4 +11,5 @@
 	<string name="title_dialog_alert">JavaScript dialog</string>
 	<string name="title_dialog_confirm">JavaScript dialog</string>
 	<string name="title_dialog_prompt">JavaScript dialog</string>
+<string name="menu_manage_scripts">Manage scripts</string>
 </resources>

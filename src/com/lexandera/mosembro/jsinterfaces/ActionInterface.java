@@ -4,18 +4,13 @@ import org.json.JSONArray;
 
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.text.ClipboardManager;
 
 import com.lexandera.mosembro.Mosembro;
-import com.lexandera.mosembro.R;
 import com.lexandera.mosembro.SmartAction;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
-import com.lexandera.mosembro.util.MosembroUtil;
 
 /** 
  * This JS interface handles window.ActionInterface.execute(id) calls which are
@@ -37,7 +32,7 @@ public class ActionInterface
         
         JSONArray jsa = new JSONArray();
         
-        String[] actions = browser.getActionStore().getActionsForMicroformat(category);
+        String[] actions = browser.getActionStore().getStriptsForMicroformatActions(category);
         for (int i=0; i<actions.length; i++) {
             jsa.put(actions[i]);
         }
@@ -53,9 +48,6 @@ public class ActionInterface
     public boolean addAction(final String action, final String uri, final String icon_for,
                              final String descShort, final String descLong)
     {
-        byte[] defaultBytes = MosembroUtil.readRawByteArray(browser.getResources(), R.raw.mf_list_no_icon);
-        final Bitmap defaultActionBitmap = BitmapFactory.decodeByteArray(defaultBytes, 0, defaultBytes.length);
-        
         final SmartAction sa = new SmartAction()
         {
             @Override
@@ -93,23 +85,7 @@ public class ActionInterface
             @Override
             public Bitmap getIconBitmap()
             {
-                // TODO: cache icons!
-                
-                SQLiteDatabase db = browser.getActionStore().getReadableDatabase();
-                Cursor data = db.rawQuery("SELECT icon FROM actions WHERE action_id = ?", new String[] { icon_for });
-                Bitmap bm = null;
-                
-                if (data.moveToFirst()) {
-                    byte[] bytes = data.getBlob(0);
-                    bm = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-                }
-                data.close();
-                
-                if (bm == null) {
-                    bm = defaultActionBitmap;
-                }
-            
-                return bm;
+                return browser.getActionStore().getIconForAction(icon_for);
             }
         };
         
@@ -130,7 +106,7 @@ public class ActionInterface
     
     public void showActionGroupDialog(int groupId)
     {
-        new SmartActionsDialog(browser, browser, groupId).show();
+        new SmartActionsDialog(browser, groupId).show();
     }
     
     public String actionGroupLink(int groupId, String text)

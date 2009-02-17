@@ -1,7 +1,6 @@
 package com.lexandera.mosembro.dialogs;
 
 import android.app.Dialog;
-import android.content.Context;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -12,9 +11,9 @@ import com.lexandera.mosembro.R;
 
 public class SettingsDialog extends Dialog
 {
-    public SettingsDialog(Context context, final Mosembro browser)
+    public SettingsDialog(final Mosembro browser)
     {
-        super(context);
+        super(browser);
         final SettingsDialog dialog = this;
         
         requestWindowFeature(Window.FEATURE_NO_TITLE);
