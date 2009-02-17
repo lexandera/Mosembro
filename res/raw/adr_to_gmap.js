@@ -1,9 +1,14 @@
+// ==Action==
+// @name           Show address on map
+// @id             com.lexandera.scripts.AddressToGMap
+// @type           microformat
+// @handles        adr
+// ==/Action==
 
 (function() {
-    
-    var AddressToGmap = function() { };
-
-    AddressToGmap.prototype.process = function(data)
+    var action = function() { };
+    action.id = 'com.lexandera.scripts.AddressToGMap';
+    action.process = function(data, matchedNode)
     {
         if (data['street-address'] != null && (data['locality'] != null || data['postal-code'] != null)) {
             var fullAddr = data['street-address']
@@ -12,7 +17,6 @@
             
             return {'intent-action': 'ACTION_VIEW',
                     'intent-url': "geo:0,0?q=" + encodeURIComponent(fullAddr),
-                    'icon': 'com.lexandera.scripts.adr_to_gmap',
                     'description-short': 'Show "' + data['street-address'] + '" on map',
                     'description-long': 'Show "' + data['street-address'] + '" using maps application'};
         }
@@ -20,5 +24,5 @@
         return null;
     }
     
-    return new AddressToGmap();
+    return action;
 })();

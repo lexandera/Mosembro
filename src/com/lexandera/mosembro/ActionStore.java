@@ -51,28 +51,32 @@ public class ActionStore extends SQLiteOpenHelper
     public void updateBuiltInActions()
     {
         Resources res = browser.getResources();
-        installAction("com.lexandera.scripts.adr_to_gmap", 
+        
+        installAction("com.lexandera.scripts.AddressToGMap", 
                 "Show address on map",
                 TYPE_MICROFORMAT, "adr", 
                 MosembroUtil.readRawString(res, R.raw.adr_to_gmap),
                 MosembroUtil.readRawByteArray(res, R.raw.mf_list_map));
-        installAction("com.lexandera.scripts.adr_journeyplanner", 
+        
+        installAction("com.lexandera.scripts.LondonJourneyPlanner", 
                 "London journey planner",
                 TYPE_MICROFORMAT, "adr", 
                 MosembroUtil.readRawString(res, R.raw.adr_journeyplanner),
                 MosembroUtil.readRawByteArray(res, R.raw.mf_list_journeyplanner));
-        installAction("com.lexandera.scripts.adr_bayarea_tripplanner", 
+        
+        installAction("com.lexandera.scripts.BayAreaTripPlanner", 
                 "Bay area trip planner",
                 TYPE_MICROFORMAT, "adr", 
                 MosembroUtil.readRawString(res, R.raw.adr_bayarea_tripplanner),
                 MosembroUtil.readRawByteArray(res, R.raw.mf_list_bayarea_tripplanner));
-        installAction("com.lexandera.scripts.adr_copy",
+        
+        installAction("com.lexandera.scripts.AddressCopyToClipboard",
                 "Copy address to clipboard",
                 TYPE_MICROFORMAT, "adr", 
                 MosembroUtil.readRawString(res, R.raw.adr_copy),
                 MosembroUtil.readRawByteArray(res, R.raw.mf_list_copy));
         
-        installAction("com.lexandera.scripts.event_to_gcal", 
+        installAction("com.lexandera.scripts.EventToGCal", 
                 "Add event to Google calendar",
                 TYPE_MICROFORMAT, "vevent", 
                 MosembroUtil.readRawString(res, R.raw.event_to_gcal),

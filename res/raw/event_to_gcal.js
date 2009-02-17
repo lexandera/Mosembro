@@ -1,10 +1,14 @@
-
-/* Locates 'vevent' elements and extracts event information from them */
+// ==Action==
+// @name           Add event to Google calendar
+// @id             com.lexandera.scripts.EventToGCal
+// @type           microformat
+// @handles        vevent
+// ==/Action==
 
 (function() {
-    var EventToGcal = function() { };
-
-    EventToGcal.prototype.process = function(data)
+    var action = function() { };
+    action.id = 'com.lexandera.scripts.EventToGCal';
+    action.process = function(data, matchedNode)
     {
         if (data['summary'] != null && data['dtstart'] != null && data['dtend'] != null) {
             var addLink = "http://www.google.com/calendar/event?action=TEMPLATE"
@@ -14,7 +18,6 @@
             
             return {'intent-action': 'ACTION_VIEW',
                     'intent-url': addLink,
-                    'icon': 'com.lexandera.scripts.event_to_gcal',
                     'description-short': 'Add "' + eventSummary + '" to my calendar',
                     'description-long': 'Add "' + eventSummary + '" to my Google calendar'};
         }
@@ -23,6 +26,6 @@
         return null;
     }
     
-    return new EventToGcal();
+    return action;
 })();
 

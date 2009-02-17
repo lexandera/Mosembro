@@ -45,8 +45,8 @@ public class ActionInterface
         return ++actionGroupId;
     }
     
-    public boolean addAction(final String action, final String uri, final String icon_for,
-                             final String descShort, final String descLong)
+    public boolean addAction(final String actionId, final String action, final String uri, 
+            final String descShort, final String descLong)
     {
         final SmartAction sa = new SmartAction()
         {
@@ -85,7 +85,7 @@ public class ActionInterface
             @Override
             public Bitmap getIconBitmap()
             {
-                return browser.getActionStore().getIconForAction(icon_for);
+                return browser.getActionStore().getIconForAction(actionId);
             }
         };
         

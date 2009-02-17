@@ -1,9 +1,14 @@
+// ==Action==
+// @name           Copy an address to clipboard
+// @id             com.lexandera.scripts.AddressCopyToClipboard
+// @type           microformat
+// @handles        adr
+// ==/Action==
 
 (function() {
-    
-    var AdrCopy = function() { };
-
-    AdrCopy.prototype.process = function(data)
+    var action = function() { };
+    action.id = 'com.lexandera.scripts.AddressCopyToClipboard';
+    action.process = function(data, matchedNode)
     {
         if (data['street-address'] != null && (data['locality'] != null || data['postal-code'] != null)) {
             var fullAddr = data['street-address']
@@ -12,7 +17,6 @@
             
             return {'intent-action': 'TEXT_COPY',
                     'intent-url': fullAddr,
-                    'icon': 'com.lexandera.scripts.adr_copy',
                     'description-short': 'Copy address to clipboard',
                     'description-long': 'Copy "' + data['street-address'] + '" to clipboard'};
         }
@@ -20,5 +24,5 @@
         return null;
     }
     
-    return new AdrCopy();
+    return action;
 })();
