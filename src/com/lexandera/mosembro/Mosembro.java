@@ -2,6 +2,7 @@ package com.lexandera.mosembro;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.UUID;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -64,6 +65,7 @@ public class Mosembro extends Activity {
     private MenuItem microformatsMenuItem;
     private boolean enableContentRewriting;
     private String lastEnteredURL = "";
+    private String secretScriptKey = generateSecretScriptKey();
     
     static final int MENU_GO_TO = 1;
     static final int MENU_RELOAD = 2;
@@ -121,9 +123,9 @@ public class Mosembro extends Activity {
                 String[] scripts = {getScript(R.raw.search_form), getScript(R.raw.parser_adr), getScript(R.raw.parser_vevent)};
                 
                 for (String script : scripts) {
-                    getWebView().loadUrl("javascript:(function(){ " + 
+                    getWebView().loadUrl("javascript:(function(scriptSecretKey){ " + 
                                          commonJS + " " +
-                                         script + " })()");
+                                         script + " })('" + Mosembro.this.secretScriptKey + "')");
                 }
 
                 super.onPageFinished(view, url);
@@ -420,6 +422,16 @@ public class Mosembro extends Activity {
     public ActionStore getActionStore()
     {
         return actionStore;
+    }
+    
+    private String generateSecretScriptKey()
+    {
+        return UUID.randomUUID().toString();
+    }
+    
+    public boolean isValidScriptKey(String scriptSecretKey)
+    {
+        return scriptSecretKey.equals(this.secretScriptKey);
     }
     
     @Override

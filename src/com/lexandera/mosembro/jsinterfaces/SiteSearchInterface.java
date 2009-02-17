@@ -17,8 +17,12 @@ public class SiteSearchInterface
         this.browser = browser;
     }
     
-    public void setSearchFormData(String formAction, String inputName, String description)
+    public void setSearchFormData(String scriptSecretKey, String formAction, String inputName, String description)
     {
+        if (!browser.isValidScriptKey(scriptSecretKey)) {
+            return;
+        }
+        
         String searchDescription = "Search site";
         if (description.length() > 1) {
             searchDescription = description;

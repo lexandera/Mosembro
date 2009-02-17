@@ -26,8 +26,11 @@ public class ActionInterface
         this.browser = browser;
     }
     
-    public String getScriptsFor(String category)
+    public String getScriptsFor(String scriptSecretKey, String category)
     {
+        if (!browser.isValidScriptKey(scriptSecretKey)) {
+            return "";
+        }
         // TODO: cache scripts!
         
         JSONArray jsa = new JSONArray();
@@ -40,14 +43,23 @@ public class ActionInterface
         return jsa.toString();
     }
     
-    public int startNewActionGroup()
+    public int startNewActionGroup(String scriptSecretKey)
     {
+        if (!browser.isValidScriptKey(scriptSecretKey)) {
+            return 0;
+        }
+        
         return ++actionGroupId;
     }
     
-    public boolean addAction(final String actionId, final String action, final String uri, 
+    public boolean addAction(String scriptSecretKey, 
+            final String actionId, final String action, final String uri, 
             final String descShort, final String descLong)
     {
+        if (!browser.isValidScriptKey(scriptSecretKey)) {
+            return false;
+        }
+        
         final SmartAction sa = new SmartAction()
         {
             @Override
@@ -109,8 +121,12 @@ public class ActionInterface
         new SmartActionsDialog(browser, groupId).show();
     }
     
-    public String actionGroupLink(int groupId, String text)
+    public String actionGroupLink(String scriptSecretKey, int groupId, String text)
     {
+        if (!browser.isValidScriptKey(scriptSecretKey)) {
+            return "";
+        }
+        
         return "<div style=\"display: block; clear: both; margin: 5px 5px 5px 2px; font-size: 85%;\">"+
             "<a href=\"/null\" " +
             "onclick=\"window.ActionInterface.showActionGroupDialog("+Integer.toString(groupId)+"); " +

@@ -1,9 +1,9 @@
 
 /* Locates 'vevent' elements and extracts event information from them, which it then passes to EventToGcalInterface  */
 
-(function() {
+(function(scriptSecretKey) {
     var scripts;
-    eval("scripts = " + window.ActionInterface.getScriptsFor('vevent'));
+    eval("scripts = " + window.ActionInterface.getScriptsFor(scriptSecretKey, 'vevent'));
     
     if (scripts.length == 0) {
         return;
@@ -41,7 +41,7 @@
                                'dtend': endDate};
         
         var showLink = false;
-        var groupId = window.ActionInterface.startNewActionGroup();
+        var groupId = window.ActionInterface.startNewActionGroup(scriptSecretKey);
         
         for (var x=0; x<scripts.length; x++) {
             var obj;
@@ -49,7 +49,8 @@
             var actionData = obj.process(microformatData, event);
             
             if (actionData) {
-                var link = window.ActionInterface.addAction(obj.id,
+                var link = window.ActionInterface.addAction(scriptSecretKey,
+                                                            obj.id,
                                                             actionData['intent-action'], 
                                                             actionData['intent-url'], 
                                                             actionData['description-short'],
@@ -66,7 +67,7 @@
                 txt = txt.substring(0, 20) + '...';
             }
             
-            event.innerHTML += window.ActionInterface.actionGroupLink(groupId, 'Actions for "'+txt+'"');
+            event.innerHTML += window.ActionInterface.actionGroupLink(scriptSecretKey, groupId, 'Actions for "'+txt+'"');
         }
     }
-})();
+})(scriptSecretKey);

@@ -1,8 +1,8 @@
 
 /* Locates 'adr' elements and extracts location information from them */
-(function() {
+(function(scriptSecretKey) {
     var scripts;
-    eval("scripts = " + window.ActionInterface.getScriptsFor('adr'));
+    eval("scripts = " + window.ActionInterface.getScriptsFor(scriptSecretKey, 'adr'));
     
     if (scripts.length == 0) {
         return;
@@ -26,7 +26,7 @@
                                'country-name': (countries[0] ? countries[0].innerHTML : null)};
         
         var showLink = false;
-        var groupId = window.ActionInterface.startNewActionGroup();
+        var groupId = window.ActionInterface.startNewActionGroup(scriptSecretKey);
         
         for (var x=0; x<scripts.length; x++) {
             var obj;
@@ -34,7 +34,8 @@
             var actionData = obj.process(microformatData, addr);
             
             if (actionData) {
-                var link = window.ActionInterface.addAction(obj.id,
+                var link = window.ActionInterface.addAction(scriptSecretKey,
+                                                            obj.id,
                                                             actionData['intent-action'], 
                                                             actionData['intent-url'], 
                                                             actionData['description-short'],
@@ -51,8 +52,8 @@
             if (txt.length > 23) {
                 txt = txt.substring(0, 20) + '...';
             }
-            addr.innerHTML += window.ActionInterface.actionGroupLink(groupId, 'Actions for "'+txt+'"');
+            addr.innerHTML += window.ActionInterface.actionGroupLink(scriptSecretKey, groupId, 'Actions for "'+txt+'"');
         }
     }
     
-})();
+})(scriptSecretKey);

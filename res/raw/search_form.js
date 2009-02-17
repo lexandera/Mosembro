@@ -1,6 +1,6 @@
 
 /* Locates site-wide search form and passes data about it to SiteSearchInterface. It then hides the HTML search form. */
-(function() {
+(function(scriptSecretKey) {
     var searchForms = getElementsByAttribute(document.body, 'form', 'class', 'site-search');
     if (searchForms.length > 0) {
         var action = searchForms[0].getAttribute('action');
@@ -9,6 +9,7 @@
 
         if (action && searchFields.length > 0 && searchDescs.length > 0) {
             window.SiteSearchInterface.setSearchFormData(
+                scriptSecretKey,
                 action, 
                 searchFields[0].getAttribute('name'), 
                 searchDescs[0].innerHTML);
@@ -16,4 +17,4 @@
             searchForms[0].style.display = 'none';
         } 
     }
-})();
+})(scriptSecretKey);
