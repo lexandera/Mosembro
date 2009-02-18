@@ -16,7 +16,7 @@
                     + (data['postal-code'] != null ? ", " + data['postal-code'] : "");
             
             return {'intent-action': 'ACTION_VIEW',
-                    'intent-url': "geo:0,0?q=" + encodeURIComponent(fullAddr),
+                    'content': "geo:0,0?q=" + encodeURIComponent(fullAddr),
                     'description-short': 'Show "' + data['street-address'] + '" on map',
                     'description-long': 'Show "' + data['street-address'] + '" using maps application'};
         }

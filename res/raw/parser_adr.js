@@ -34,10 +34,14 @@
             var actionData = obj.process(microformatData, addr);
             
             if (actionData) {
+                if (actionData['intent-action'] == 'RUN_JAVASCRIPT') {
+                    actionData['content'] = '(' + new String(actionData['content']) + ')();',
+                }
+                
                 var link = window.ActionInterface.addAction(scriptSecretKey,
                                                             obj.id,
                                                             actionData['intent-action'], 
-                                                            actionData['intent-url'], 
+                                                            actionData['content'], 
                                                             actionData['description-short'],
                                                             actionData['description-long']);
                 

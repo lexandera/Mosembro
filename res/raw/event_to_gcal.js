@@ -17,7 +17,7 @@
                 + (data['location'] != null ? "&location=" + encodeURIComponent(data['location']) : "");
             
             return {'intent-action': 'ACTION_VIEW',
-                    'intent-url': addLink,
+                    'content': addLink,
                     'description-short': 'Add "' + eventSummary + '" to my calendar',
                     'description-long': 'Add "' + eventSummary + '" to my Google calendar'};
         }

@@ -53,7 +53,7 @@ public class ActionInterface
     }
     
     public boolean addAction(String scriptSecretKey, 
-            final String actionId, final String action, final String uri, 
+            final String actionId, final String action, final String value, 
             final String descShort, final String descLong)
     {
         if (!browser.isValidScriptKey(scriptSecretKey)) {
@@ -69,7 +69,10 @@ public class ActionInterface
                 
                 if ("TEXT_COPY".equals(action)) {
                     ClipboardManager clipboard = (ClipboardManager)browser.getSystemService(Context.CLIPBOARD_SERVICE); 
-                    clipboard.setText(uri);
+                    clipboard.setText(value);
+                }
+                else if ("RUN_JAVASCRIPT".equals(action)) {
+                    browser.getWebView().loadUrl("javascript:(function(){ " + value + " })()");
                 }
                 else {
                     try {
@@ -77,7 +80,7 @@ public class ActionInterface
                     }
                     catch (Exception e) {}
                     
-                    Intent i = new Intent(intentAction, Uri.parse(uri));
+                    Intent i = new Intent(intentAction, Uri.parse(value));
                     browser.startActivity(i);
                 }
             }

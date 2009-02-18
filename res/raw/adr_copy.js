@@ -16,7 +16,7 @@
                     + (data['postal-code'] != null ? ", " + data['postal-code'] : "");
             
             return {'intent-action': 'TEXT_COPY',
-                    'intent-url': fullAddr,
+                    'content': fullAddr,
                     'description-short': 'Copy address to clipboard',
                     'description-long': 'Copy "' + data['street-address'] + '" to clipboard'};
         }

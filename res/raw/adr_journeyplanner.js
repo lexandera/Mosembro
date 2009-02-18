@@ -17,7 +17,7 @@
                                     + (data['postal-code'] != null ? ", " + data['postal-code'] : "");
             
                 return {'intent-action': 'ACTION_VIEW',
-                    'intent-url': "http://lexandera.com/mosembrodemo/tflplanner.php?dest=" + encodeURIComponent(fullAddr),
+                    'content': "http://lexandera.com/mosembrodemo/tflplanner.php?dest=" + encodeURIComponent(fullAddr),
                     'description-short': 'Travel to "' + data['street-address'] + '"',
                     'description-long': 'Travel to "' + data['street-address'] + '"'};
             }

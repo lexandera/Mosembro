@@ -13,7 +13,7 @@
         if (data['street-address'] != null && data['region'] != null) {
             if (data['region'].toLowerCase() == 'ca' || data['region'].toLowerCase() == 'california') {
                 return {'intent-action': 'ACTION_VIEW',
-                    'intent-url': "http://lexandera.com/mosembrodemo/bayarea_tripplanner.php" +
+                    'content': "http://lexandera.com/mosembrodemo/bayarea_tripplanner.php" +
                                   "?dest_addr=" + encodeURIComponent(data['street-address']) +
                                   "&dest_city=" + encodeURIComponent(data['locality']),
                     'description-short': 'Travel to "' + data['street-address'] + '"',
