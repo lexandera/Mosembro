@@ -7,13 +7,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
-import java.util.HashMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import android.content.res.Resources;
 
-public class MosembroUtil
+public class Reader
 {
     public static String readRawString(Resources res, int resourceId)
     {
@@ -129,44 +126,7 @@ public class MosembroUtil
         }
         return raw; 
     }
-    
-    public static HashMap<String, String> parseActionScript(String text)
-    {
-        HashMap<String, String> out = new HashMap<String, String>();
-        Pattern headerExtractRegex = Pattern.compile("==Action==(.*?)==/Action==", Pattern.DOTALL);
-        Pattern fieldExtractRegex = Pattern.compile("^.*?@([^ ]+)\\s*(.*?)\\s*$", Pattern.MULTILINE);
-        Matcher headerMatcher = headerExtractRegex.matcher(text);
-        
-        if (headerMatcher.find()) {
-            String header = headerMatcher.group(1);
-            
-            Matcher fieldMatcher = fieldExtractRegex.matcher(header);
-            while (fieldMatcher.find()) {
-                String propname = fieldMatcher.group(1);
-                String propvalue = fieldMatcher.group(2);
-                
-                if (!"".equals(propname) && !"".equals(propvalue)) {
-                    out.put(propname, propvalue);
-                }
-            }
-        }
-        
-        if (out.containsKey("name") && out.containsKey("id") && out.containsKey("type") && out.containsKey("handles")) {
-            return out;
-        }
-        
-        return null;
-    }
 }
-
-
-
-
-
-
-
-
-
 
 
 

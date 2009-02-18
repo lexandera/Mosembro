@@ -8,7 +8,6 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -16,6 +15,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
+import android.webkit.DownloadListener;
 import android.webkit.JsPromptResult;
 import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
@@ -25,6 +25,7 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.lexandera.mosembro.dialogs.GoToDialog;
 import com.lexandera.mosembro.dialogs.ManageActionsDialog;
@@ -33,7 +34,7 @@ import com.lexandera.mosembro.dialogs.SiteSearchDialog;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
 import com.lexandera.mosembro.jsinterfaces.ActionInterface;
 import com.lexandera.mosembro.jsinterfaces.SiteSearchInterface;
-import com.lexandera.mosembro.util.MosembroUtil;
+import com.lexandera.mosembro.util.Reader;
 
 /**
  * Mosembro - Mobile semantic browser
@@ -103,7 +104,7 @@ public class Mosembro extends Activity {
         zoomholder.addView(wv.getZoomControls());
         wv.getZoomControls().setVisibility(View.GONE);
 
-        /* Register JS interfaces used by scripts located in /res/raw/ */
+        /* Register JS interfaces used by action scripts */
         wv.addJavascriptInterface(new ActionInterface(this), "ActionInterface");
         wv.addJavascriptInterface(new SiteSearchInterface(this), "SiteSearchInterface");
         
@@ -112,7 +113,7 @@ public class Mosembro extends Activity {
             /** 
              * This method is called after a page finishes loading.
              * 
-             * It reads all the JS files and injects them into the web page which has just 
+             * It reads all the JS microformat parsers and injects them into the web page which has just 
              * finished loading. This is achieved by calling loadUrl("javascript:<js-code-here>"),
              * which is the exact same method used by bookmarklets.
              */
@@ -132,47 +133,44 @@ public class Mosembro extends Activity {
             }
             
             @Override
-            public void onPageStarted(WebView view, final String url, Bitmap favicon)
+            public void onPageStarted(WebView view, String url, Bitmap favicon)
             {
-                if (url.endsWith(".action.js")) {
-                    view.stopLoading();
-                    
-                    new AlertDialog.Builder(Mosembro.this)
-                        .setTitle("Mosembro action detected")
-                        .setMessage("Ya knows what... That thar file sure looks like a Mosembro action script. Wanna install it?")
-                        .setPositiveButton("Sure do!", 
-                                new AlertDialog.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which)
-                                    {
-                                        Resources res = getResources();
-                                        String script = MosembroUtil.readRemoteString(res, url);
-                                        HashMap<String, String> vals = MosembroUtil.parseActionScript(script);
-                                        
-                                        if (vals != null) {
-                                            getActionStore().installAction(vals.get("id"), 
-                                                                           vals.get("name"), 
-                                                                           "microformat", 
-                                                                           vals.get("handles"), 
-                                                                           script, 
-                                                                           MosembroUtil.readRemoteByteArray(res, vals.get("icon")));
-                                        }
-                                        
-                                    }
-                                })
-                        .setNegativeButton("Not really.", null)
-                        .create()
-                        .show();
-                    
-                    return;
-                }
-                
                 setSiteSearchOptions(false, null);
                 resetSmartActions();
                 
                 super.onPageStarted(view, url, favicon);
             }
+        });
+        
+        wv.setDownloadListener(new DownloadListener() 
+        {
+            @Override
+            public void onDownloadStart(final String url, String userAgent, String contentDisposition, String mimetype, long contentLength)
+            {
+                if (url.endsWith(".action.js")) {
+                    new AlertDialog.Builder(Mosembro.this)
+                        .setTitle(R.string.action_install_dialog_title)
+                        .setMessage(R.string.action_install_dialog_msg)
+                        .setPositiveButton(android.R.string.yes, 
+                                new AlertDialog.OnClickListener()
+                                {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which)
+                                    {
+                                        if (getActionStore().installFromUrl(url)) {
+                                            Toast.makeText(Mosembro.this, R.string.action_install_ok, Toast.LENGTH_SHORT).show();
+                                        }
+                                        else {
+                                            Toast.makeText(Mosembro.this, R.string.action_install_failed, Toast.LENGTH_SHORT).show();
+                                        }
+                                    }
+                                })
+                        .setNegativeButton(android.R.string.no, null)
+                        .create()
+                        .show();
+                }
+            }
+            
         });
         
         wv.setWebChromeClient(new WebChromeClient()
@@ -261,7 +259,6 @@ public class Mosembro extends Activity {
                 
                 return true;
             };
-
             
             
             @Override
@@ -298,9 +295,6 @@ public class Mosembro extends Activity {
         
         lastEnteredURL = targetURL;
         setTitle("Loading "+targetURL);
-        
-//        setSiteSearchOptions(false, null);
-//        resetSmartActions();
         
         getWebView().loadUrl(targetURL);
     }
@@ -416,7 +410,7 @@ public class Mosembro extends Activity {
      */
     public String getScript(int resourceId)
     {
-        return MosembroUtil.readRawString(getResources(), resourceId);
+        return Reader.readRawString(getResources(), resourceId);
     }
     
     public ActionStore getActionStore()

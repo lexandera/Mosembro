@@ -25,15 +25,15 @@ import com.lexandera.mosembro.R;
 public class ManageActionsDialog extends Dialog
 {
     Mosembro browser;
-    final ArrayList<InstalledAction> installedActions = new ArrayList<InstalledAction>();
     
     public ManageActionsDialog(final Mosembro browser)
     {
         super(browser);
         setTitle("Manage installed actions");
-        this.browser = browser;
         setContentView(R.layout.installed_actions_dialog);
                
+        this.browser = browser;
+        ArrayList<InstalledAction> installedActions = new ArrayList<InstalledAction>();
         SQLiteDatabase db = browser.getActionStore().getReadableDatabase();
         Cursor data = db.rawQuery("SELECT action_id, name FROM actions", null);
 
@@ -44,8 +44,8 @@ public class ManageActionsDialog extends Dialog
             installedActions.add(new InstalledAction(id, name, icon));
         }
         
-        InstalledActonsListArrayAdapter<InstalledAction> saAdapter = new InstalledActonsListArrayAdapter<InstalledAction>(
-                browser, R.layout.smart_list_row, R.id.smart_list_text, installedActions);
+        InstalledActonsListArrayAdapter<InstalledAction> saAdapter = 
+            new InstalledActonsListArrayAdapter<InstalledAction>(browser, installedActions);
         
         ListView installedActionsList;
         installedActionsList = (ListView)findViewById(R.id.installed_actions_list);
@@ -83,16 +83,9 @@ public class ManageActionsDialog extends Dialog
     
     private class InstalledActonsListArrayAdapter<E extends InstalledAction> extends ArrayAdapter<E>
     {
-        public InstalledActonsListArrayAdapter(Context context, int resource, int fieldId,
-                List<E> objects)
+        public InstalledActonsListArrayAdapter(Context context, List<E> objects)
         {
-            super(context, resource, fieldId, objects);
-        }
-        
-        public InstalledActonsListArrayAdapter(Context context, int resource, int fieldId,
-                E[] objects)
-        {
-            super(context, resource, fieldId, objects);
+            super(context, 0, objects);
         }
         
         @Override
@@ -112,21 +105,22 @@ public class ManageActionsDialog extends Dialog
                 @Override
                 public void onClick(View v)
                 {
+                    String confirmMsg = browser.getResources().getString(R.string.action_delete_confirm_dialog_msg);
                     new AlertDialog.Builder(browser)
-                    .setTitle("Please confirm")
-                    .setMessage("Really delete \"" + ia.getName() + "\"?")
-                    .setPositiveButton(android.R.string.yes, 
-                            new DialogInterface.OnClickListener() 
-                            {
-                                public void onClick(DialogInterface dialog, int which) 
+                        .setTitle(R.string.action_delete_confirm_dialog_title)
+                        .setMessage(String.format(confirmMsg, ia.getName()))
+                        .setPositiveButton(android.R.string.yes, 
+                                new DialogInterface.OnClickListener() 
                                 {
-                                    browser.getActionStore().deleteAction(ia.getId());
-                                    remove(getItem(position));
-                                }
-                            })
-                    .setNegativeButton(android.R.string.no, null)
-                .create()
-                .show();
+                                    public void onClick(DialogInterface dialog, int which) 
+                                    {
+                                        browser.getActionStore().deleteAction(ia.getId());
+                                        remove(getItem(position));
+                                    }
+                                })
+                        .setNegativeButton(android.R.string.no, null)
+                    .create()
+                    .show();
                 }
                 
             });

@@ -40,12 +40,11 @@ public class SmartActionsDialog extends Dialog
     void init(final Mosembro browser, int actionGroup)
     {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.smart_actions_dialog);
 
         this.browser = browser;
         final SmartActionsDialog dialog = this;
         ArrayList<SmartAction> actions;
-        
-        setContentView(R.layout.smart_actions_dialog);
         
         if (actionGroup < 0) {
             actions = browser.getSmartActions();
@@ -59,10 +58,7 @@ public class SmartActionsDialog extends Dialog
         }
         
         final ArrayList<SmartAction> finalActions = actions;
-        
-        SmartListArrayAdapter<SmartAction> saAdapter = new SmartListArrayAdapter<SmartAction>(
-                browser, R.layout.smart_list_row, R.id.smart_list_text, actions);
-        
+        SmartListArrayAdapter<SmartAction> saAdapter = new SmartListArrayAdapter<SmartAction>(browser, actions);
        
         saList = (ListView)findViewById(R.id.smart_actions_list);
         saList.setAdapter(saAdapter);
@@ -74,22 +70,14 @@ public class SmartActionsDialog extends Dialog
                 dialog.dismiss();
                 finalActions.get(position).execute();
             }
-            
         });
     }
     
     private class SmartListArrayAdapter<E extends SmartAction> extends ArrayAdapter<E>
     {
-        public SmartListArrayAdapter(Context context, int resource, int fieldId,
-                List<E> objects)
+        public SmartListArrayAdapter(Context context, List<E> objects)
         {
-            super(context, resource, fieldId, objects);
-        }
-        
-        public SmartListArrayAdapter(Context context, int resource, int fieldId,
-                E[] objects)
-        {
-            super(context, resource, fieldId, objects);
+            super(context, 0, objects);
         }
         
         @Override
@@ -100,18 +88,16 @@ public class SmartActionsDialog extends Dialog
             LinearLayout ll = new LinearLayout(super.getContext());
             ll.setPadding(8, 8, 4, 8);
             
+            LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
             ImageView iv = new ImageView(super.getContext());
             iv.setImageBitmap(sa.getIconBitmap());
-            
-            LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
             iv.setLayoutParams(iv_lp);
             ll.addView(iv);
             
-            TextView tv = new TextView(super.getContext());
-            tv.setText(sa.toString());
-            
             LinearLayout.LayoutParams tv_lp = new LinearLayout.LayoutParams(-1, -2);
             tv_lp.setMargins(16, 0, 0, 0);
+            TextView tv = new TextView(super.getContext());
+            tv.setText(sa.toString());
             tv.setLayoutParams(tv_lp);
             ll.addView(tv);
             

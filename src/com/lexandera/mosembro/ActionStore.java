@@ -2,6 +2,8 @@ package com.lexandera.mosembro;
 
 
 import java.util.HashMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import android.content.ContentValues;
 import android.content.res.Resources;
@@ -11,7 +13,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 
-import com.lexandera.mosembro.util.MosembroUtil;
+import com.lexandera.mosembro.util.Reader;
 
 public class ActionStore extends SQLiteOpenHelper
 {
@@ -19,22 +21,26 @@ public class ActionStore extends SQLiteOpenHelper
     private static final int DB_VERSION = 2;
     
     private Mosembro browser;
-    private HashMap<String, Bitmap> iconCache = new HashMap<String, Bitmap>();
     private Bitmap defaultActionBitmap;
+    private HashMap<String, Bitmap> iconCache;
+    private HashMap<String, String[]> scriptCache;
     
     public ActionStore(Mosembro context)
     {
         super(context, "mosembro", null, DB_VERSION);
         this.browser = context;
         
-        byte[] defaultBytes = MosembroUtil.readRawByteArray(browser.getResources(), R.raw.mf_list_no_icon);
+        clearCache();
+        
+        /* load default icon for actions */
+        byte[] defaultBytes = Reader.readRawByteArray(browser.getResources(), R.raw.mf_list_no_icon);
         defaultActionBitmap = BitmapFactory.decodeByteArray(defaultBytes, 0, defaultBytes.length);
     }
     
     @Override
     public void onCreate(SQLiteDatabase db)
     {
-        db.execSQL(MosembroUtil.readRawString(browser.getResources(), R.raw.db_create));
+        db.execSQL(Reader.readRawString(browser.getResources(), R.raw.db_create));
         updateBuiltInActions();
     }
     
@@ -47,6 +53,12 @@ public class ActionStore extends SQLiteOpenHelper
         }
     }
     
+    void clearCache()
+    {
+        iconCache = new HashMap<String, Bitmap>();
+        scriptCache = new HashMap<String, String[]>();
+    }
+    
     /* (re)installs built-in actions */
     public void updateBuiltInActions()
     {
@@ -55,32 +67,32 @@ public class ActionStore extends SQLiteOpenHelper
         installAction("com.lexandera.scripts.AddressToGMap", 
                 "Show address on map",
                 TYPE_MICROFORMAT, "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_to_gmap),
-                MosembroUtil.readRawByteArray(res, R.raw.mf_list_map));
+                Reader.readRawString(res, R.raw.adr_to_gmap),
+                Reader.readRawByteArray(res, R.raw.mf_list_map));
         
         installAction("com.lexandera.scripts.LondonJourneyPlanner", 
                 "London journey planner",
                 TYPE_MICROFORMAT, "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_journeyplanner),
-                MosembroUtil.readRawByteArray(res, R.raw.mf_list_journeyplanner));
+                Reader.readRawString(res, R.raw.adr_journeyplanner),
+                Reader.readRawByteArray(res, R.raw.mf_list_journeyplanner));
         
         installAction("com.lexandera.scripts.BayAreaTripPlanner", 
                 "Bay area trip planner",
                 TYPE_MICROFORMAT, "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_bayarea_tripplanner),
-                MosembroUtil.readRawByteArray(res, R.raw.mf_list_bayarea_tripplanner));
+                Reader.readRawString(res, R.raw.adr_bayarea_tripplanner),
+                Reader.readRawByteArray(res, R.raw.mf_list_bayarea_tripplanner));
         
         installAction("com.lexandera.scripts.AddressCopyToClipboard",
                 "Copy address to clipboard",
                 TYPE_MICROFORMAT, "adr", 
-                MosembroUtil.readRawString(res, R.raw.adr_copy),
-                MosembroUtil.readRawByteArray(res, R.raw.mf_list_copy));
+                Reader.readRawString(res, R.raw.adr_copy),
+                Reader.readRawByteArray(res, R.raw.mf_list_copy));
         
         installAction("com.lexandera.scripts.EventToGCal", 
                 "Add event to Google calendar",
                 TYPE_MICROFORMAT, "vevent", 
-                MosembroUtil.readRawString(res, R.raw.event_to_gcal),
-                MosembroUtil.readRawByteArray(res, R.raw.mf_list_calendar));
+                Reader.readRawString(res, R.raw.event_to_gcal),
+                Reader.readRawByteArray(res, R.raw.mf_list_calendar));
     }
     
     public void installAction(String actionId, String name, String type, String handles, String script, String iconURL)
@@ -91,9 +103,6 @@ public class ActionStore extends SQLiteOpenHelper
     
     public void installAction(String actionId, String name, String type, String handles, String script, byte[] icon)
     {
-        SQLiteDatabase db = getWritableDatabase();
-        db.execSQL("DELETE FROM actions WHERE action_id = ?;", new String[] { actionId });
-        
         ContentValues vals = new ContentValues();
         vals.put("action_id", actionId);
         vals.put("name", name);
@@ -101,38 +110,46 @@ public class ActionStore extends SQLiteOpenHelper
         vals.put("handles", handles);
         vals.put("script", script);
         vals.put("icon", icon);
-        db.insert("actions", null, vals);
+        
+        deleteAction(actionId);
+        getWritableDatabase().insert("actions", null, vals);
+        
+        clearCache();
     }
     
     public void deleteAction(String actionId)
     {
         SQLiteDatabase db = getWritableDatabase();
         db.execSQL("DELETE FROM actions WHERE action_id = ?;", new String[] { actionId });
+        
+        clearCache();
     }
     
     public String[] getStriptsForMicroformatActions(String microformat)
     {
-        SQLiteDatabase db = getReadableDatabase();
-        Cursor data = db.rawQuery("SELECT script " +
-        		                  "FROM actions " +
-        		                  "WHERE type = ? " +
-        		                  "AND handles = ?", new String[] {TYPE_MICROFORMAT, microformat });
-        
-        String[] out = new String[data.getCount()];
-        int i = 0;
-        while (data.moveToNext()) {
-            out[i] = data.getString(0);
-            ++i;
+        if (!scriptCache.containsKey(microformat)) {
+            Cursor data = getReadableDatabase().rawQuery(
+                    "SELECT script " +
+                    "FROM actions " +
+                    "WHERE type = ? " +
+                    "AND handles = ?", 
+                    new String[] {TYPE_MICROFORMAT, microformat });
+            
+            String[] scripts = new String[data.getCount()];
+            int i = 0;
+            while (data.moveToNext()) {
+                scripts[i] = data.getString(0);
+                ++i;
+            }
+            data.close();
+            scriptCache.put(microformat, scripts);
         }
-        data.close();
         
-        return out;
+        return scriptCache.get(microformat);
     }
     
     public Bitmap getIconForAction(String actionId)
     {
-        // TODO: clear icon cache on script reinstall!
-        
         if (!iconCache.containsKey(actionId)) {
             SQLiteDatabase db = getReadableDatabase();
             Cursor data = db.rawQuery("SELECT icon FROM actions WHERE action_id = ?", new String[] { actionId });
@@ -152,5 +169,53 @@ public class ActionStore extends SQLiteOpenHelper
         }
         
         return iconCache.get(actionId);
+    }
+
+    public static HashMap<String, String> parseActionScript(String text)
+    {
+        HashMap<String, String> out = new HashMap<String, String>();
+        Pattern headerExtractRegex = Pattern.compile("==Action==(.*?)==/Action==", Pattern.DOTALL);
+        Pattern fieldExtractRegex = Pattern.compile("^.*?@([^ ]+)\\s*(.*?)\\s*$", Pattern.MULTILINE);
+        Matcher headerMatcher = headerExtractRegex.matcher(text);
+        
+        if (headerMatcher.find()) {
+            String header = headerMatcher.group(1);
+            
+            Matcher fieldMatcher = fieldExtractRegex.matcher(header);
+            while (fieldMatcher.find()) {
+                String propname = fieldMatcher.group(1);
+                String propvalue = fieldMatcher.group(2);
+                
+                if (!"".equals(propname) && !"".equals(propvalue)) {
+                    out.put(propname, propvalue);
+                }
+            }
+        }
+        
+        if (out.containsKey("name") && out.containsKey("id") && out.containsKey("type") && out.containsKey("handles")) {
+            return out;
+        }
+        
+        return null;
+    }
+    
+    public boolean installFromUrl(final String url)
+    {
+        Resources res = browser.getResources();
+        String script = Reader.readRemoteString(res, url);
+        HashMap<String, String> vals = ActionStore.parseActionScript(script);
+        
+        if (vals != null) {
+            installAction(vals.get("id"), 
+                          vals.get("name"), 
+                          "microformat", 
+                          vals.get("handles"), 
+                          script, 
+                          Reader.readRemoteByteArray(res, vals.get("icon")));
+            
+            return true;
+        }
+        
+        return false;
     }
 }

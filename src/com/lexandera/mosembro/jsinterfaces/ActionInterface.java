@@ -13,8 +13,8 @@ import com.lexandera.mosembro.SmartAction;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
 
 /** 
- * This JS interface handles window.ActionInterface.execute(id) calls which are
- * triggered by onclick events, attached to "smart links" (when smart links are enabled)
+ * This JS interface handles adding of new actions and window.ActionInterface.execute(id) 
+ * calls which are triggered by onclick events, attached to "smart links" (when smart links are enabled)
  */
 public class ActionInterface
 {
@@ -31,7 +31,6 @@ public class ActionInterface
         if (!browser.isValidScriptKey(scriptSecretKey)) {
             return "";
         }
-        // TODO: cache scripts!
         
         JSONArray jsa = new JSONArray();
         
@@ -43,6 +42,9 @@ public class ActionInterface
         return jsa.toString();
     }
     
+    /**
+     * Starts a new group for actions. All actions attached to the same link belobg to one group. 
+     */
     public int startNewActionGroup(String scriptSecretKey)
     {
         if (!browser.isValidScriptKey(scriptSecretKey)) {
@@ -130,6 +132,8 @@ public class ActionInterface
             return "";
         }
         
+        // NOTE: DO NOT put scriptSecretKey in this link because that would make it 
+        //       possible for any piece of JavaScript to get it!
         return "<div style=\"display: block; clear: both; margin: 5px 5px 5px 2px; font-size: 85%;\">"+
             "<a href=\"/null\" " +
             "onclick=\"window.ActionInterface.showActionGroupDialog("+Integer.toString(groupId)+"); " +
