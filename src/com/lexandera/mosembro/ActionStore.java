@@ -18,7 +18,7 @@ import com.lexandera.mosembro.util.Reader;
 public class ActionStore extends SQLiteOpenHelper
 {
     private static final String TYPE_MICROFORMAT = "microformat";
-    private static final int DB_VERSION = 2;
+    private static final int DB_VERSION = 5;
     
     private Mosembro browser;
     private Bitmap defaultActionBitmap;
@@ -41,7 +41,6 @@ public class ActionStore extends SQLiteOpenHelper
     public void onCreate(SQLiteDatabase db)
     {
         db.execSQL(Reader.readRawString(browser.getResources(), R.raw.db_create));
-        updateBuiltInActions();
     }
     
     @Override
