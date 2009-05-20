@@ -23,7 +23,6 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -100,9 +99,7 @@ public class Mosembro extends Activity {
         
         /* Enable zooming */
         websettings.setSupportZoom(true);
-        FrameLayout zoomholder = (FrameLayout)this.findViewById(R.id.browser_zoom_controls);
-        zoomholder.addView(wv.getZoomControls());
-        wv.getZoomControls().setVisibility(View.GONE);
+        websettings.setBuiltInZoomControls(true); 
 
         /* Register JS interfaces used by action scripts */
         wv.addJavascriptInterface(new ActionInterface(this), "ActionInterface");
@@ -140,6 +137,15 @@ public class Mosembro extends Activity {
                 
                 super.onPageStarted(view, url, favicon);
             }
+            
+            public boolean shouldOverrideUrlLoading(WebView view, final String url)
+            {
+                if (looksLikeActionScript(url)) {
+                    installActionScript(url);
+                    return true;
+                }
+                return false;
+            }
         });
         
         wv.setDownloadListener(new DownloadListener() 
@@ -147,28 +153,7 @@ public class Mosembro extends Activity {
             @Override
             public void onDownloadStart(final String url, String userAgent, String contentDisposition, String mimetype, long contentLength)
             {
-                if (url.endsWith(".action.js")) {
-                    new AlertDialog.Builder(Mosembro.this)
-                        .setTitle(R.string.action_install_dialog_title)
-                        .setMessage(R.string.action_install_dialog_msg)
-                        .setPositiveButton(android.R.string.yes, 
-                                new AlertDialog.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which)
-                                    {
-                                        if (getActionStore().installFromUrl(url)) {
-                                            Toast.makeText(Mosembro.this, R.string.action_install_ok, Toast.LENGTH_SHORT).show();
-                                        }
-                                        else {
-                                            Toast.makeText(Mosembro.this, R.string.action_install_failed, Toast.LENGTH_SHORT).show();
-                                        }
-                                    }
-                                })
-                        .setNegativeButton(android.R.string.no, null)
-                        .create()
-                        .show();
-                }
+                installActionScript(url);
             }
             
         });
@@ -426,6 +411,42 @@ public class Mosembro extends Activity {
     public boolean isValidScriptKey(String scriptSecretKey)
     {
         return scriptSecretKey.equals(this.secretScriptKey);
+    }
+    
+    boolean looksLikeActionScript(String url)
+    {
+        if (url.endsWith(".action.js")) {
+            return true;
+        }
+        return false;
+    }
+    
+    void installActionScript(final String url)
+    {
+        if (!looksLikeActionScript(url)) {
+            return;
+        }
+        
+        new AlertDialog.Builder(this)
+            .setTitle(R.string.action_install_dialog_title)
+            .setMessage(R.string.action_install_dialog_msg)
+            .setPositiveButton(android.R.string.yes, 
+                    new AlertDialog.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
+                        {
+                            if (getActionStore().installFromUrl(url)) {
+                                Toast.makeText(Mosembro.this, R.string.action_install_ok, Toast.LENGTH_SHORT).show();
+                            }
+                            else {
+                                Toast.makeText(Mosembro.this, R.string.action_install_failed, Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    })
+            .setNegativeButton(android.R.string.no, null)
+            .create()
+            .show();
     }
     
     @Override
