@@ -2,11 +2,13 @@ package com.lexandera.mosembro.jsinterfaces;
 
 import org.json.JSONArray;
 
+import com.lexandera.mosembro.R;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.ClipboardManager;
+import android.widget.Toast;
 
 import com.lexandera.mosembro.Mosembro;
 import com.lexandera.mosembro.SmartAction;
@@ -79,11 +81,12 @@ public class ActionInterface
                 else {
                     try {
                         intentAction = (String)Intent.class.getField(action).get(null);
+                        Intent i = new Intent(intentAction, Uri.parse(value));
+                        browser.startActivity(i);
                     }
-                    catch (Exception e) {}
-                    
-                    Intent i = new Intent(intentAction, Uri.parse(value));
-                    browser.startActivity(i);
+                    catch (Exception e) {
+                    	Toast.makeText(browser, R.string.action_execute_failed, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
             

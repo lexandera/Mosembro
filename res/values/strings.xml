@@ -18,4 +18,5 @@
 	<string name="action_install_dialog_msg">Requested file looks like a Mosembro action script. Would you like to install it?</string>
 	<string name="action_delete_confirm_dialog_title">Please confirm</string>
 	<string name="action_delete_confirm_dialog_msg">Do you really want to delete \"%s\"?</string>
+<string name="action_execute_failed">Ooops. Something went wrong.</string>
 </resources>
