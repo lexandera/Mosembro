@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -83,49 +84,24 @@ public class SmartActionsDialog extends Dialog
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
-        	ViewHolder holder;
+        	TextView tv;
         	
         	if (convertView == null) {
-        		holder = new ViewHolder();
-        		
-        		LinearLayout ll = new LinearLayout(super.getContext());
-        		ll.setPadding(8, 8, 4, 8);
-        		
-        		LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
-        		ImageView iv = new ImageView(super.getContext());
-        		iv.setLayoutParams(iv_lp);
-        		ll.addView(iv);
-        		
-        		LinearLayout.LayoutParams tv_lp = new LinearLayout.LayoutParams(-1, -2);
-        		tv_lp.setMargins(16, 0, 0, 0);
-        		TextView tv = new TextView(super.getContext());
-        		tv.setLayoutParams(tv_lp);
-        		ll.addView(tv);
-        		
-        		holder.icon = iv;
-        		holder.label = tv;
-        		ll.setTag(holder);
-        		
-        		convertView = ll;
+        		tv = new TextView(super.getContext());
+        		tv.setPadding(8, 8, 4, 8);
         	}
         	else {
-        		holder = (ViewHolder)convertView.getTag();
+        		tv = (TextView)convertView;
         	}
         	
             SmartAction sa = getItem(position);
             
-            holder.icon.setImageBitmap(sa.getIconBitmap());
-            holder.label.setText(sa.toString());
+            tv.setText(sa.toString());
+            tv.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(sa.getIconBitmap()), null, null, null);
+            tv.setCompoundDrawablePadding(10);
             
-            return convertView;
+            return tv;
         }
-        
-        class ViewHolder 
-        {
-        	ImageView icon;
-        	TextView label;
-        }
-        
     }
     
 }

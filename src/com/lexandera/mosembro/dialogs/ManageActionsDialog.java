@@ -10,6 +10,7 @@ import android.content.DialogInterface;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -18,6 +19,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.lexandera.mosembro.Mosembro;
 import com.lexandera.mosembro.R;
@@ -102,19 +104,13 @@ public class ManageActionsDialog extends Dialog
                 Button deleteBtn = new Button(super.getContext());
                 deleteBtn.setText("X");
                 ll.addView(deleteBtn);
-        		
-                ImageView iv = new ImageView(super.getContext());
-                LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
-                iv.setLayoutParams(iv_lp);
-                ll.addView(iv);
                 
                 TextView tv = new TextView(super.getContext());
-                LinearLayout.LayoutParams tv_lp = new LinearLayout.LayoutParams(-1, -2);
+                LinearLayout.LayoutParams tv_lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
                 tv_lp.setMargins(16, 0, 0, 0);
                 tv.setLayoutParams(tv_lp);
                 ll.addView(tv);
         		
-        		holder.icon = iv;
         		holder.label = tv;
         		holder.deleteBtn = deleteBtn;
         		ll.setTag(holder);
@@ -127,8 +123,10 @@ public class ManageActionsDialog extends Dialog
         	
             final InstalledAction ia = getItem(position);
 
-            holder.icon.setImageBitmap(ia.getIcon());
             holder.label.setText(ia.getName());
+            holder.label.setCompoundDrawablesWithIntrinsicBounds(new BitmapDrawable(ia.getIcon()), null, null, null);
+            holder.label.setCompoundDrawablePadding(10);
+            
             holder.deleteBtn.setOnClickListener(new View.OnClickListener() 
             {
                 @Override
@@ -158,7 +156,6 @@ public class ManageActionsDialog extends Dialog
         
         class ViewHolder 
         {
-        	ImageView icon;
         	TextView label;
         	Button deleteBtn;
         }
