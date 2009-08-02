@@ -91,16 +91,45 @@ public class ManageActionsDialog extends Dialog
         @Override
         public View getView(final int position, View convertView, ViewGroup parent)
         {
+        	ViewHolder holder;
+        	
+        	if (convertView == null) {
+        		holder = new ViewHolder();
+        		
+                LinearLayout ll = new LinearLayout(super.getContext());
+                ll.setPadding(8, 8, 4, 8);
+                
+                Button deleteBtn = new Button(super.getContext());
+                deleteBtn.setText("X");
+                ll.addView(deleteBtn);
+        		
+                ImageView iv = new ImageView(super.getContext());
+                LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
+                iv.setLayoutParams(iv_lp);
+                ll.addView(iv);
+                
+                TextView tv = new TextView(super.getContext());
+                LinearLayout.LayoutParams tv_lp = new LinearLayout.LayoutParams(-1, -2);
+                tv_lp.setMargins(16, 0, 0, 0);
+                tv.setLayoutParams(tv_lp);
+                ll.addView(tv);
+        		
+        		holder.icon = iv;
+        		holder.label = tv;
+        		holder.deleteBtn = deleteBtn;
+        		ll.setTag(holder);
+        		
+        		convertView = ll;
+        	}
+        	else {
+        		holder = (ViewHolder)convertView.getTag();
+        	}
+        	
             final InstalledAction ia = getItem(position);
-            
-            LinearLayout ll = new LinearLayout(super.getContext());
-            ll.setPadding(8, 8, 4, 8);
-            
-            Button deleteBtn = new Button(super.getContext());
-            deleteBtn.setText("X");
-            ll.addView(deleteBtn);
-            
-            deleteBtn.setOnClickListener(new View.OnClickListener() 
+
+            holder.icon.setImageBitmap(ia.getIcon());
+            holder.label.setText(ia.getName());
+            holder.deleteBtn.setOnClickListener(new View.OnClickListener() 
             {
                 @Override
                 public void onClick(View v)
@@ -122,25 +151,17 @@ public class ManageActionsDialog extends Dialog
                     .create()
                     .show();
                 }
-                
             });
             
-            ImageView iv = new ImageView(super.getContext());
-            iv.setImageBitmap(ia.getIcon());
-            LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
-            iv.setLayoutParams(iv_lp);
-            ll.addView(iv);
-            
-            TextView tv = new TextView(super.getContext());
-            tv.setText(ia.getName());
-            LinearLayout.LayoutParams tv_lp = new LinearLayout.LayoutParams(-1, -2);
-            tv_lp.setMargins(16, 0, 0, 0);
-            tv.setLayoutParams(tv_lp);
-            ll.addView(tv);
-            
-            return ll;
+            return convertView;
         }
         
+        class ViewHolder 
+        {
+        	ImageView icon;
+        	TextView label;
+        	Button deleteBtn;
+        }
     }
     
 }

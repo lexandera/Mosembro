@@ -83,25 +83,47 @@ public class SmartActionsDialog extends Dialog
         @Override
         public View getView(int position, View convertView, ViewGroup parent)
         {
+        	ViewHolder holder;
+        	
+        	if (convertView == null) {
+        		holder = new ViewHolder();
+        		
+        		LinearLayout ll = new LinearLayout(super.getContext());
+        		ll.setPadding(8, 8, 4, 8);
+        		
+        		LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
+        		ImageView iv = new ImageView(super.getContext());
+        		iv.setLayoutParams(iv_lp);
+        		ll.addView(iv);
+        		
+        		LinearLayout.LayoutParams tv_lp = new LinearLayout.LayoutParams(-1, -2);
+        		tv_lp.setMargins(16, 0, 0, 0);
+        		TextView tv = new TextView(super.getContext());
+        		tv.setLayoutParams(tv_lp);
+        		ll.addView(tv);
+        		
+        		holder.icon = iv;
+        		holder.label = tv;
+        		ll.setTag(holder);
+        		
+        		convertView = ll;
+        	}
+        	else {
+        		holder = (ViewHolder)convertView.getTag();
+        	}
+        	
             SmartAction sa = getItem(position);
             
-            LinearLayout ll = new LinearLayout(super.getContext());
-            ll.setPadding(8, 8, 4, 8);
+            holder.icon.setImageBitmap(sa.getIconBitmap());
+            holder.label.setText(sa.toString());
             
-            LinearLayout.LayoutParams iv_lp = new LinearLayout.LayoutParams(40, 40);
-            ImageView iv = new ImageView(super.getContext());
-            iv.setImageBitmap(sa.getIconBitmap());
-            iv.setLayoutParams(iv_lp);
-            ll.addView(iv);
-            
-            LinearLayout.LayoutParams tv_lp = new LinearLayout.LayoutParams(-1, -2);
-            tv_lp.setMargins(16, 0, 0, 0);
-            TextView tv = new TextView(super.getContext());
-            tv.setText(sa.toString());
-            tv.setLayoutParams(tv_lp);
-            ll.addView(tv);
-            
-            return ll;
+            return convertView;
+        }
+        
+        class ViewHolder 
+        {
+        	ImageView icon;
+        	TextView label;
         }
         
     }
