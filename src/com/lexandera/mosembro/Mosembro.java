@@ -49,7 +49,7 @@ import com.lexandera.mosembro.util.Reader;
  * 2. loadWebPage(...) is called at the end of onCreate
  * 3. When a page finishes loading, WebViewClient.onPageFinished() is called. 
  *    At this point JS files located in /res/raw/ are loaded and injected into the web page.
- * 4. JS code extracts microformats and passes the data to the browser using registered interfaces
+ * 4. JS code extracts microformats and passes the data to the browser using registered JS interfaces
  * 5. Interfaces create SmartActions which can then be executed by clicking on "smart links" (if enabled)
  *    or by going to "Menu > Smart actions"
  * */
@@ -370,7 +370,7 @@ public class Mosembro extends Activity {
     }
     
     /**
-     * Changes actiove/inactive state of icons in the title bar 
+     * Updates active/inactive state of icons in the title bar 
      */
     public void updateTitleIcons()
     {
@@ -408,11 +408,21 @@ public class Mosembro extends Activity {
         return UUID.randomUUID().toString();
     }
     
+    /**
+     * Checks if the given string is a valid secret key
+     * @param scriptSecretKey A generated key which is available only to installed JS scripts. Prevents other scripts from calling this function.
+     * @return true if valid, false otherwise
+     */
     public boolean isValidScriptKey(String scriptSecretKey)
     {
         return scriptSecretKey.equals(this.secretScriptKey);
     }
     
+    /**
+     * Checks if a given file URL looks like it is pointing to an action script file
+     * @param url URL of file
+     * @return true if URL ends with ".action.js", false otherwise
+     */
     boolean looksLikeActionScript(String url)
     {
         if (url.endsWith(".action.js")) {
@@ -421,6 +431,10 @@ public class Mosembro extends Activity {
         return false;
     }
     
+    /**
+     * Called when the browser detects an action script file
+     * @param url Location of the script
+     */
     void installActionScript(final String url)
     {
         if (!looksLikeActionScript(url)) {

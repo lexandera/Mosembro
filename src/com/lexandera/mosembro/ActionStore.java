@@ -15,6 +15,9 @@ import android.graphics.BitmapFactory;
 
 import com.lexandera.mosembro.util.Reader;
 
+/**
+ * Manages retrieval, installing and removing of action scripts and their icons.
+ */
 public class ActionStore extends SQLiteOpenHelper
 {
     private static final String TYPE_MICROFORMAT = "microformat";
@@ -58,7 +61,9 @@ public class ActionStore extends SQLiteOpenHelper
         scriptCache = new HashMap<String, String[]>();
     }
     
-    /* (re)installs built-in actions */
+    /**
+     *  (re)installs standard built-in actions
+     */
     public void updateBuiltInActions()
     {
         Resources res = browser.getResources();
@@ -94,12 +99,15 @@ public class ActionStore extends SQLiteOpenHelper
                 Reader.readRawByteArray(res, R.raw.mf_list_calendar));
     }
     
-    public void installAction(String actionId, String name, String type, String handles, String script, String iconURL)
-    {
-        byte[] icon = new byte[] {};
-        installAction(actionId, name, type, handles, script, icon);
-    }
-    
+    /**
+     * Installs a new action and stores it in the internal database
+     * @param actionId Action script's internal identification string (script's @id field)
+     * @param name Name of this action
+     * @param type Type of data this action handles (only "microformat" is recognized for now)
+     * @param handles Name of Microformat handled by this script (adr, vevent, ...)
+     * @param script JavaScript code for this action
+     * @param icon
+     */
     public void installAction(String actionId, String name, String type, String handles, String script, byte[] icon)
     {
         ContentValues vals = new ContentValues();
@@ -116,6 +124,10 @@ public class ActionStore extends SQLiteOpenHelper
         clearCache();
     }
     
+    /**
+     * Delete an action with given ID
+     * @param actionId Action script's internal identification string (script's @id field)
+     */
     public void deleteAction(String actionId)
     {
         SQLiteDatabase db = getWritableDatabase();
@@ -124,6 +136,10 @@ public class ActionStore extends SQLiteOpenHelper
         clearCache();
     }
     
+    /**
+     * Returns an array of scripts which are registered as handlers for the given Microformat
+     * @param microformat Name of the microformat (adr, vevent, ...)
+     */
     public String[] getStriptsForMicroformatActions(String microformat)
     {
         if (!scriptCache.containsKey(microformat)) {
@@ -147,6 +163,10 @@ public class ActionStore extends SQLiteOpenHelper
         return scriptCache.get(microformat);
     }
     
+    /**
+     * Returns the icon associated with the given script ID
+     * @param actionId Action script's internal identification string (script's @id field)
+     */
     public Bitmap getIconForAction(String actionId)
     {
         if (!iconCache.containsKey(actionId)) {
@@ -170,6 +190,11 @@ public class ActionStore extends SQLiteOpenHelper
         return iconCache.get(actionId);
     }
 
+    /**
+     * Parses parameter values from an action script file header
+     * @param text Contents of an action script file
+     * @return A HashMap containing parameter name / value pairs. Returns null if not all required fields have been found.
+     */
     public static HashMap<String, String> parseActionScript(String text)
     {
         HashMap<String, String> out = new HashMap<String, String>();
@@ -191,6 +216,7 @@ public class ActionStore extends SQLiteOpenHelper
             }
         }
         
+        /* make sure that all required fields have been found */
         if (out.containsKey("name") && out.containsKey("id") && out.containsKey("type") && out.containsKey("handles")) {
             return out;
         }
@@ -198,6 +224,11 @@ public class ActionStore extends SQLiteOpenHelper
         return null;
     }
     
+    /**
+     * Installs an action located at given URL
+     * @param url Location of script to install
+     * @return true if successful, false otherwise
+     */
     public boolean installFromUrl(final String url)
     {
         String script = Reader.readRemoteString(url);

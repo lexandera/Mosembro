@@ -19,11 +19,20 @@ import com.lexandera.mosembro.Mosembro;
 import com.lexandera.mosembro.R;
 import com.lexandera.mosembro.SmartAction;
 
+/**
+ * This dialog displays a list of actions available for currently loaded page
+ */
 public class SmartActionsDialog extends Dialog
 {
     Mosembro browser;
     ListView saList;
+    public static final int DISPLAY_ALL = 1;
     
+    /**
+     * 
+     * @param browser
+     * @param actionGroup ID of the group of actions to display. If equal to DISPLAY_ALL, all actions will be displayed. 
+     */
     public SmartActionsDialog(final Mosembro browser, int actionGroup)
     {
         super(browser);
@@ -33,9 +42,14 @@ public class SmartActionsDialog extends Dialog
     public SmartActionsDialog(final Mosembro browser)
     {
         super(browser);
-        init(browser, -1);
+        init(browser, DISPLAY_ALL);
     }
     
+    /**
+     * 
+     * @param browser
+     * @param actionGroup ID of the group of actions to display. If equal to DISPLAY_ALL, all actions will be displayed. 
+     */
     void init(final Mosembro browser, int actionGroup)
     {
         requestWindowFeature(Window.FEATURE_NO_TITLE);

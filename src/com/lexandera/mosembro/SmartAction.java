@@ -2,6 +2,10 @@ package com.lexandera.mosembro;
 
 import android.graphics.Bitmap;
 
+/**
+ * A prototype for dynamically generated classes for content-related smart actions.
+ * @see ActionInterface.addAction()
+ */
 public abstract class SmartAction
 {
     abstract public void execute();
