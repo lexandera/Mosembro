@@ -28,6 +28,12 @@ public class ActionInterface
         this.browser = browser;
     }
     
+    /**
+     * Returns all installed scripts for a certain category. This is used by content parsers written in JS.
+     * @param scriptSecretKey A generated key which is available only to installed JS scripts. Prevents other scripts from calling this function. 
+     * @param category For now this is the name of a supported Microformat (adr, vevent, ...)
+     * @return a string representation of a JSON array containing installed scripts for requested category
+     */
     public String getScriptsFor(String scriptSecretKey, String category)
     {
         if (!browser.isValidScriptKey(scriptSecretKey)) {
@@ -43,9 +49,11 @@ public class ActionInterface
         
         return jsa.toString();
     }
-    
+
     /**
-     * Starts a new group for actions. All actions attached to the same link belobg to one group. 
+     * Starts a new group for actions. All actions attached to the same link belong to one group. 
+     * @param scriptSecretKey A generated key which is available only to installed JS scripts. Prevents other scripts from calling this function. 
+     * @return ID of new group
      */
     public int startNewActionGroup(String scriptSecretKey)
     {
@@ -56,6 +64,17 @@ public class ActionInterface
         return ++actionGroupId;
     }
     
+    /**
+     * Adds a new content-related smart action
+     * 
+     * @param scriptSecretKey A generated key which is available only to installed JS scripts. Prevents other scripts from calling this function.
+     * @param actionId Action script's internal identification string (script's @id field)
+     * @param action Intent action (TEXT_COPY, RUN_JAVASCRIPT, or any of Intent class' ACTION_* fields like ACTION_VIEW, ...)
+     * @param value Intent URI
+     * @param descShort Short description of what this action does
+     * @param descLong Long description of what this action does
+     * @return true if it is OK to display a link for this action, false otherwise
+     */
     public boolean addAction(String scriptSecretKey, 
             final String actionId, final String action, final String value, 
             final String descShort, final String descLong)
@@ -64,6 +83,9 @@ public class ActionInterface
             return false;
         }
         
+        /**
+         * Selecting an action from a list will trigger this instance's execute() method
+         */
         final SmartAction sa = new SmartAction()
         {
             @Override
@@ -124,11 +146,23 @@ public class ActionInterface
         return false;
     }
     
+    /**
+     * Displays a dialog containing a list of available content-related actions.
+     * Usually called by JS generated in ActionInterface.actionGroupLink().
+     * @param groupId ID of group of actions to show
+     */
     public void showActionGroupDialog(int groupId)
     {
         new SmartActionsDialog(browser, groupId).show();
     }
     
+    /**
+     * Generates HTML for a link which displays a dialog with available actions when clicked
+     * @param scriptSecretKey A generated key which is available only to installed JS scripts. Prevents other scripts from calling this function. 
+     * @param groupId ID of group to display when clicked
+     * @param text Link text
+     * @return string containing HTML
+     */
     public String actionGroupLink(String scriptSecretKey, int groupId, String text)
     {
         if (!browser.isValidScriptKey(scriptSecretKey)) {

@@ -200,19 +200,22 @@ public class ActionStore extends SQLiteOpenHelper
     
     public boolean installFromUrl(final String url)
     {
-        Resources res = browser.getResources();
-        String script = Reader.readRemoteString(res, url);
+        String script = Reader.readRemoteString(url);
         HashMap<String, String> vals = ActionStore.parseActionScript(script);
         
         if (vals != null) {
-            installAction(vals.get("id"), 
-                          vals.get("name"), 
-                          "microformat", 
-                          vals.get("handles"), 
-                          script, 
-                          Reader.readRemoteByteArray(res, vals.get("icon")));
-            
-            return true;
+        	byte[] icon = Reader.readRemoteByteArray(vals.get("icon"));
+        	
+        	if (icon != null) {
+        		installAction(vals.get("id"), 
+        				vals.get("name"), 
+        				"microformat", 
+        				vals.get("handles"), 
+        				script, 
+        				icon);
+        		
+        		return true;
+        	}
         }
         
         return false;

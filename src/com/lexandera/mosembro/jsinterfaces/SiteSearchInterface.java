@@ -5,7 +5,7 @@ import java.util.HashMap;
 import com.lexandera.mosembro.Mosembro;
 
 /** 
- * Saves configuration params for site-level search
+ * Holds configuration params for site-level search
  * It is used by /res/raw/search_form.js 
  */
 public class SiteSearchInterface
@@ -17,6 +17,15 @@ public class SiteSearchInterface
         this.browser = browser;
     }
     
+    /**
+     * Called by JavaScript in /res/raw/search_form.js as window.SiteSearchInterface.setSearchFormData(...). 
+     * SiteSearchInterface is registered by Mosembro.onCreate().
+     * 
+     * @param scriptSecretKey A generated key which is available only to installed JS scripts. Prevents other scripts from calling this function. 
+     * @param formAction Location where search form data is submitted to
+     * @param inputName Name of the HTML field which accepts the search string
+     * @param description Search form description
+     */
     public void setSearchFormData(String scriptSecretKey, String formAction, String inputName, String description)
     {
         if (!browser.isValidScriptKey(scriptSecretKey)) {

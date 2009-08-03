@@ -10,8 +10,16 @@ import java.net.URLConnection;
 
 import android.content.res.Resources;
 
+/**
+ * Utility functions for reading files
+ */
 public class Reader
 {
+    /**
+     * Reads a file from /raw/res/ and returns it as a String
+     * @param res Resources instance for Mosembro
+     * @param resourceId ID of resource (ex: R.raw.resource_name)
+     */
     public static String readRawString(Resources res, int resourceId)
     {
         InputStream is = res.openRawResource(resourceId);
@@ -39,6 +47,12 @@ public class Reader
         return sb.toString();
     }
     
+    /**
+     * Reads a file from /raw/res/ and returns it as a byte array
+     * @param res Resources instance for Mosembro
+     * @param resourceId ID of resource (ex: R.raw.resource_name)
+     * @return byte[] if successful, null otherwise
+     */
     public static byte[] readRawByteArray(Resources res, int resourceId)
     {
         InputStream is = null;
@@ -50,6 +64,7 @@ public class Reader
         }
         catch (IOException e) {
             e.printStackTrace();
+            raw = null;
         }
         finally {
             try {
@@ -59,11 +74,15 @@ public class Reader
                 e.printStackTrace();
             }
         }
+        
         return raw;
     }
     
-    
-    public static String readRemoteString(Resources res, String fileUrl)
+    /**
+     * Reads a remote file and returns it as as a String
+     * @param fileUrl URL of remote file
+     */
+    public static String readRemoteString(String fileUrl)
     {
         InputStream is = null;
         StringBuilder sb = new StringBuilder();
@@ -98,7 +117,12 @@ public class Reader
         return sb.toString();
     }
     
-    public static byte[] readRemoteByteArray(Resources res, String fileUrl)
+    /**
+     * Reads a remote file and returns it as as a byte array
+     * @param fileUrl URL of remote file
+     * @return byte[] if successful, null otherwise
+     */
+    public static byte[] readRemoteByteArray(String fileUrl)
     {
         InputStream is = null;
         byte[] raw = new byte[] {};
@@ -113,6 +137,7 @@ public class Reader
         }
         catch (Exception e) {
             e.printStackTrace();
+            raw = null;
         }
         finally {
             try {
@@ -124,6 +149,7 @@ public class Reader
                 e.printStackTrace();
             }
         }
+        
         return raw; 
     }
 }
