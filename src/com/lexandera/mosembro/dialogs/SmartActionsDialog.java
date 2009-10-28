@@ -71,7 +71,7 @@ public class SmartActionsDialog extends Dialog
         }
         
         final ArrayList<SmartAction> finalActions = actions;
-        SmartListArrayAdapter<SmartAction> saAdapter = new SmartListArrayAdapter<SmartAction>(browser, actions);
+        SmartListArrayAdapter saAdapter = new SmartListArrayAdapter(browser, actions);
        
         saList = (ListView)findViewById(R.id.smart_actions_list);
         saList.setAdapter(saAdapter);
@@ -86,9 +86,9 @@ public class SmartActionsDialog extends Dialog
         });
     }
     
-    private class SmartListArrayAdapter<E extends SmartAction> extends ArrayAdapter<E>
+    private class SmartListArrayAdapter extends ArrayAdapter<SmartAction>
     {
-        public SmartListArrayAdapter(Context context, List<E> objects)
+        public SmartListArrayAdapter(Context context, List<SmartAction> objects)
         {
             super(context, 0, objects);
         }
@@ -97,14 +97,14 @@ public class SmartActionsDialog extends Dialog
         public View getView(int position, View convertView, ViewGroup parent)
         {
         	TextView tv;
-        	
-        	if (convertView == null) {
-        		tv = new TextView(super.getContext());
-        		tv.setPadding(8, 8, 4, 8);
-        	}
-        	else {
-        		tv = (TextView)convertView;
-        	}
+
+            if (convertView == null) {
+                tv = new TextView(super.getContext());
+                tv.setPadding(8, 8, 4, 8);
+            } 
+            else {
+                tv = (TextView) convertView;
+            }
         	
             SmartAction sa = getItem(position);
             

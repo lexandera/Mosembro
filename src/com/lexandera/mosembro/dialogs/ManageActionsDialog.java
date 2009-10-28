@@ -45,8 +45,8 @@ public class ManageActionsDialog extends Dialog
             installedActions.add(new InstalledAction(id, name, icon));
         }
         
-        InstalledActonsListArrayAdapter<InstalledAction> saAdapter = 
-            new InstalledActonsListArrayAdapter<InstalledAction>(browser, installedActions);
+        InstalledActonsListArrayAdapter saAdapter = 
+            new InstalledActonsListArrayAdapter(browser, installedActions);
         
         ListView installedActionsList;
         installedActionsList = (ListView)findViewById(R.id.installed_actions_list);
@@ -82,9 +82,9 @@ public class ManageActionsDialog extends Dialog
         }
     }
     
-    private class InstalledActonsListArrayAdapter<E extends InstalledAction> extends ArrayAdapter<E>
+    private class InstalledActonsListArrayAdapter extends ArrayAdapter<InstalledAction>
     {
-        public InstalledActonsListArrayAdapter(Context context, List<E> objects)
+        public InstalledActonsListArrayAdapter(Context context, List<InstalledAction> objects)
         {
             super(context, 0, objects);
         }
@@ -93,32 +93,33 @@ public class ManageActionsDialog extends Dialog
         public View getView(final int position, View convertView, ViewGroup parent)
         {
         	ViewHolder holder;
-        	
-        	if (convertView == null) {
-        		holder = new ViewHolder();
-        		
+
+            if (convertView == null) {
+                holder = new ViewHolder();
+
                 LinearLayout ll = new LinearLayout(super.getContext());
                 ll.setPadding(8, 8, 4, 8);
-                
+
                 Button deleteBtn = new Button(super.getContext());
                 deleteBtn.setText("X");
                 ll.addView(deleteBtn);
-                
+
                 TextView tv = new TextView(super.getContext());
-                LinearLayout.LayoutParams tv_lp = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
+                LinearLayout.LayoutParams tv_lp = new LayoutParams(
+                        LayoutParams.FILL_PARENT, LayoutParams.FILL_PARENT);
                 tv_lp.setMargins(16, 0, 0, 0);
                 tv.setLayoutParams(tv_lp);
                 ll.addView(tv);
-        		
-        		holder.label = tv;
-        		holder.deleteBtn = deleteBtn;
-        		ll.setTag(holder);
-        		
-        		convertView = ll;
-        	}
-        	else {
-        		holder = (ViewHolder)convertView.getTag();
-        	}
+
+                holder.label = tv;
+                holder.deleteBtn = deleteBtn;
+                ll.setTag(holder);
+
+                convertView = ll;
+            } 
+            else {
+                holder = (ViewHolder) convertView.getTag();
+            }
         	
             final InstalledAction ia = getItem(position);
 
