@@ -2,13 +2,18 @@ package com.lexandera.mosembro;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -462,6 +467,32 @@ public class Mosembro extends Activity {
             .create()
             .show();
     }
+    
+    /**
+     * Indicates whether the specified action can be used as an intent. This
+     * method queries the package manager for installed packages that can
+     * respond to an intent with the specified action. If no suitable package is
+     * found, this method returns false.
+     *
+     * @param context The application's environment.
+     * @param action The Intent action to check for availability.
+     * @return True if an Intent with the specified action can be sent and
+     *         responded to, false otherwise.
+     */
+    public boolean isIntentAvailable(String action, String value) 
+    {
+        try {
+            String intentAction = (String)Intent.class.getField(action).get(null);
+            Intent i = new Intent(intentAction, Uri.parse(value));
+            List<ResolveInfo> list = 
+                getPackageManager().queryIntentActivities(i, PackageManager.MATCH_DEFAULT_ONLY);
+            return list.size() > 0;
+        }
+        catch (Exception e) {
+            return false;
+        }
+    }
+
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu)

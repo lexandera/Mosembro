@@ -26,7 +26,7 @@ public class SmartActionsDialog extends Dialog
 {
     Mosembro browser;
     ListView saList;
-    public static final int DISPLAY_ALL = 1;
+    public static final int ACTIONS_DISPLAY_ALL = 0;
     
     /**
      * 
@@ -42,7 +42,7 @@ public class SmartActionsDialog extends Dialog
     public SmartActionsDialog(final Mosembro browser)
     {
         super(browser);
-        init(browser, DISPLAY_ALL);
+        init(browser, ACTIONS_DISPLAY_ALL);
     }
     
     /**
@@ -59,7 +59,7 @@ public class SmartActionsDialog extends Dialog
         final SmartActionsDialog dialog = this;
         ArrayList<SmartAction> actions;
         
-        if (actionGroup < 0) {
+        if (actionGroup <= ACTIONS_DISPLAY_ALL) {
             actions = browser.getSmartActions();
         }
         else {

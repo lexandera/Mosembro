@@ -2,7 +2,6 @@ package com.lexandera.mosembro.jsinterfaces;
 
 import org.json.JSONArray;
 
-import com.lexandera.mosembro.R;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +10,7 @@ import android.text.ClipboardManager;
 import android.widget.Toast;
 
 import com.lexandera.mosembro.Mosembro;
+import com.lexandera.mosembro.R;
 import com.lexandera.mosembro.SmartAction;
 import com.lexandera.mosembro.dialogs.SmartActionsDialog;
 
@@ -82,6 +82,15 @@ public class ActionInterface
         if (!browser.isValidScriptKey(scriptSecretKey)) {
             return false;
         }
+
+        /* Do not display actions for which the 
+         * intent cannot be handled by the system */
+        if (!"TEXT_COPY".equals(action) &&
+            !"RUN_JAVASCRIPT".equals(action) &&
+            !browser.isIntentAvailable(action, value))
+        {
+            return false;
+        }
         
         /**
          * Selecting an action from a list will trigger this instance's execute() method
@@ -91,8 +100,6 @@ public class ActionInterface
             @Override
             public void execute()
             {
-                String intentAction = null;
-                
                 if ("TEXT_COPY".equals(action)) {
                     ClipboardManager clipboard = (ClipboardManager)browser.getSystemService(Context.CLIPBOARD_SERVICE); 
                     clipboard.setText(value);
@@ -102,7 +109,7 @@ public class ActionInterface
                 }
                 else {
                     try {
-                        intentAction = (String)Intent.class.getField(action).get(null);
+                        String intentAction = (String)Intent.class.getField(action).get(null);
                         Intent i = new Intent(intentAction, Uri.parse(value));
                         browser.startActivity(i);
                     }
