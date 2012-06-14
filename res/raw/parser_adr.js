@@ -3,7 +3,6 @@
 (function(scriptSecretKey) {
     var scripts;
     eval("scripts = " + window.ActionInterface.getScriptsFor(scriptSecretKey, 'adr'));
-    
     if (scripts.length == 0) {
         return;
     }
@@ -35,7 +34,7 @@
             
             if (actionData) {
                 if (actionData['intent-action'] == 'RUN_JAVASCRIPT') {
-                    actionData['content'] = '(' + new String(actionData['content']) + ')();',
+                    actionData['content'] = '(' + new String(actionData['content']) + ')();';
                 }
                 
                 var link = window.ActionInterface.addAction(scriptSecretKey,

@@ -50,7 +50,7 @@
             
             if (actionData) {
                 if (actionData['intent-action'] == 'RUN_JAVASCRIPT') {
-                    actionData['content'] = '(' + new String(actionData['content']) + ')();',
+                    actionData['content'] = '(' + new String(actionData['content']) + ')();';
                 }
                 
                 var link = window.ActionInterface.addAction(scriptSecretKey,
