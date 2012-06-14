@@ -117,13 +117,17 @@ public class Mosembro extends Activity {
              * 
              * It reads all the JS microformat parsers and injects them into the web page which has just 
              * finished loading. This is achieved by calling loadUrl("javascript:<js-code-here>"),
-             * which is the exact same method used by bookmarklets.
+             * which is the exact same method as used by bookmarklets.
              */
             @Override
             public void onPageFinished(WebView view, String url)
             {
                 String commonJS = getScript(R.raw.common);
-                String[] scripts = {getScript(R.raw.search_form), getScript(R.raw.parser_adr), getScript(R.raw.parser_vevent)};
+                String[] scripts = {
+                    getScript(R.raw.search_form),
+                    getScript(R.raw.parser_adr),
+                    getScript(R.raw.parser_vevent)
+                };
                 
                 for (String script : scripts) {
                     getWebView().loadUrl("javascript:(function(scriptSecretKey){ " + 
